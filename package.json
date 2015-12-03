@@ -1,0 +1,19 @@
+{
+  "name": "gitstamps",
+  "version": "1.0.0",
+  "description": "project 3 for ga wdi",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timothytgregg/gitstamps.git"
+  },
+  "author": "timothytgregg, cpgruber, ajohnson052, solowt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/timothytgregg/gitstamps/issues"
+  },
+  "homepage": "https://github.com/timothytgregg/gitstamps#readme"
+}
