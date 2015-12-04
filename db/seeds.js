@@ -25,7 +25,7 @@ var profiles = [bob, susy, tom]
 var gitstamps = [gitstamp1, gitstamp2, gitstamp3, gitstamp4, gitstamp5, gitstamp6]
 
 for(var i = 0; i < profiles.length; i++){
-  profiles[i]gitstamps.pushgitstamps[i],gitstamps[i+3])
+  profiles[i].gitstamps.push(gitstamps[i],gitstamps[i+3])
   profiles[i].save(function(err){
     if (err){
       console.log(err)

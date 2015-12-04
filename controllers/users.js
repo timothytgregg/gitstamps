@@ -42,5 +42,5 @@ module.exports = {
   postLogin: postLogin ,
   getSignup: getSignup,
   postSignup: postSignup,
-  getLogout: getLogout
+  getLogout: getLogout,
 };

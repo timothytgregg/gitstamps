@@ -7,7 +7,7 @@ var Schema = mongoose.Schema,
 
 // defining schema for reminders
 var GitstampSchema = new Schema({
-  data: Float
+  data: String
 })
 
 // defining schema for authors.
