@@ -16,7 +16,7 @@ var profilesController = {
       });
     }else{
       Profile.find({}).populate("stamps").then(function(profiles){
-        res.render("index",{ user: req.user })
+        res.render("index")
       })
     }
   },

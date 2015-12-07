@@ -7,8 +7,8 @@ var usersController = {
     res.render('login')
   },
   logout:function(req,res){
+    req.session.destroy();
     req.logout();
-
     res.redirect('/login');
   }
 }
