@@ -1,31 +1,36 @@
+// requires mongoose dependencies
 var mongoose = require('mongoose')
-var conn = mongoose.connect('mongodb://localhost/gitstamps')
+// connects us to the reminders database in mongo
+var conn = mongoose.connect('mongodb://localhost/chase-express')
+// require our model definitions we defined earlier
 var ProfileModel = require("../models/profile")
-var GitstampModel = require("../models/gitstamp")
-
+var StampModel = require("../models/stamp")
+// removes any existing profiles and stamps from our database
 ProfileModel.remove({}, function(err){
-  console.log(err)
 })
-GitstampModel.remove({}, function(err){
-  console.log(err)
+StampModel.remove({}, function(err){
 })
 
-var bob = new ProfileModel({name: "bob"})
-var susy = new ProfileModel({name: "susy"})
-var tom = new ProfileModel({name: "tom"})
+// instantiates 3 authors and 6 reminders in memory(but not saved yet) and
+// shoves them into arrays
+var bob = new ProfileModel({username: "bob"})
+var charlie = new ProfileModel({username: "charlie"})
+var tom = new ProfileModel({username: "tom"})
 
-var gitstamp1 = new GitstampModel({data: Math.random()});
-var gitstamp2 = new GitstampModel({data: Math.random()});
-var gitstamp3 = new GitstampModel({data: Math.random()});
-var gitstamp4 = new GitstampModel({data: Math.random()});
-var gitstamp5 = new GitstampModel({data: Math.random()});
-var gitstamp6 = new GitstampModel({data: Math.random()});
+var stamp1 = new StampModel({data:{language: "Stamp1!!"}})
+var stamp2 = new StampModel({data:{language: "Stamp2!!"}})
+var stamp3 = new StampModel({data:{language: "Stamp3!!"}})
+var stamp4 = new StampModel({data:{language: "Stamp4!!"}})
+var stamp5 = new StampModel({data:{language: "Stamp5!!"}})
+var stamp6 = new StampModel({data:{language: "Stamp6!!"}})
 
-var profiles = [bob, susy, tom]
-var gitstamps = [gitstamp1, gitstamp2, gitstamp3, gitstamp4, gitstamp5, gitstamp6]
+var profiles = [bob, charlie, tom]
+var stamps = [stamp1, stamp2, stamp3, stamp4, stamp5, stamp6]
 
+// iterate through the profiles to save them to the database after 2 stamps
+// have been added as subdocuments to the profile
 for(var i = 0; i < profiles.length; i++){
-  profiles[i].gitstamps.push(gitstamps[i],gitstamps[i+3])
+  profiles[i].stamps.push(stamps[i], stamps[i+3])
   profiles[i].save(function(err){
     if (err){
       console.log(err)
