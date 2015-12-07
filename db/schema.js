@@ -12,9 +12,13 @@ var GitstampSchema = new Schema({
 
 // defining schema for authors.
 var ProfileSchema = new Schema({
-  name: String,
+  username: String,
   gitstamps: [GitstampSchema]
 })
+
+ProfileSchema.methods.sayHi = function(){
+  console.log("hi");
+}
 
 // setting models in mongoose utilizing schemas defined above
 var ProfileModel = mongoose.model("Profile", ProfileSchema)
