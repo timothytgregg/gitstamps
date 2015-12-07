@@ -3,6 +3,9 @@ var mongoose = require('mongoose')// loads mongoose dependency
 var bodyParser = require('body-parser')// loads dependency for middleware for paramters
 var methodOverride = require('method-override')// loads dependency that allows put/delete where not supported in html
 var hbs = require('hbs');
+var cookieParser = require('cookie-parser');
+var bodyParser   = require('body-parser');
+var session      = require('express-session');
 
 mongoose.connect('mongodb://localhost/chase-express')// connect mongoose interfaces to reminders mongo db
 
@@ -20,11 +23,13 @@ app.set('view engine', 'hbs');
 app.set("views",__dirname +"/views");
 app.use(express.static(__dirname + '/public'))// connects assets like stylesheets
 
+app.use(session({ secret: 'WDI-GENERAL-ASSEMBLY-EXPRESS' }));
 app.use(passport.initialize())
 app.use(passport.session())
 
 app.use(function (req, res, next) {
   res.locals.currentUser = req.user;
+  console.log(req.user)
   next();
 });
 
