@@ -40,4 +40,7 @@ router.route('/auth/github/callback')
 router.route('/login')
   .get(usersController.login)
 
+router.route('/logout')
+  .get(usersController.logout)
+
 module.exports = router;
