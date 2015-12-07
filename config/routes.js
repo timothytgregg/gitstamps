@@ -11,13 +11,20 @@ function authenticatedUser(req, res, next) {
   res.redirect('/login');
 }
 
-router.route('/profiles/:format?')
+router.route('/login')
+  .get(usersController.login)
+
+router.route('/logout')
+  .get(usersController.logout)
+
+router.route('/profiles:format?')
   .get(profilesController.getProfiles)
   .post(profilesController.addProfile)
 
-router.route('/:format?')
-  .get(profilesController.getProfiles)
-  .post(profilesController.addProfile)
+router.route('/')
+  .get(function(req,res){
+    res.redirect('/profiles')//only humans, never go to .json
+  })
 
 router.route('/profiles/:id')
   .get(profilesController.getProfile)
@@ -36,11 +43,5 @@ router.route('/auth/github/callback')
     successRedirect: '/',
     failureRedirect: '/login'
   }));
-
-router.route('/login')
-  .get(usersController.login)
-
-router.route('/logout')
-  .get(usersController.logout)
 
 module.exports = router;
