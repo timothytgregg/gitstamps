@@ -4,7 +4,7 @@ var Stamp = require("../models/stamp")
 
 var usersController = {
   login:function(req,res){
-    res.render('login.hbs')
+    res.render('login')
   }
 }
 module.exports = usersController;

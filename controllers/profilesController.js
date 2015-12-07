@@ -8,28 +8,17 @@ function error(response, message){
   response.json({error: message})
 }
 
-function authenticatedUser(req, res, next) {
-  // If the user is authenticated, then we continue the execution
-  if (req.isAuthenticated()) return next();
-  res.redirect('/login');
-}
-
 var profilesController = {
   getProfiles: function(req,res){
-    console.log(req.params.format)
     if (req.params.format){
       Profile.find({}).populate("stamps").then(function(profiles){
-        //response renders json of profiles
-        res.json(profiles);
-        // res.render('index', {profiles})
+        res.json(profiles);//response renders json of profiles
       });
     }else{
       Profile.find({}).populate("stamps").then(function(profiles){
-        res.render("index")
+        res.render("index",{ user: req.user })
       })
     }
-
-
   },
   getProfile: function(req,res){
     Profile.findById(req.params.id).populate("stamps").then(function(profile){
@@ -38,7 +27,6 @@ var profilesController = {
   },
   addProfile:function(req,res){
     new Profile(req.body).save().then(function(profile){
-      // profile.createStamp();
       return profile;
     }).then(function(profile){
       res.json(profile);

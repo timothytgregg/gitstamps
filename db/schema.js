@@ -18,7 +18,21 @@ var ProfileSchema = new Schema({
   stamps: [StampSchema]
 })
 
+var UserSchema = new Schema({
+  local : {
+    email: String,
+    password: String,
+  },
+  github : {
+    id: String,
+    token: String,
+    username: String,
+    displayName: String
+  }
+});
+
 // setting models in mongoose utilizing schemas defined above, we'll be using
 // these frequently throughout our app
 mongoose.model("Profile", ProfileSchema)
 mongoose.model("Stamp", StampSchema)
+mongoose.model("User", UserSchema)

@@ -5,7 +5,7 @@ var Profile = function(info){
 };
 
 Profile.fetch = function(){
-  var request = $.getJSON("http://localhost:4000/profiles")
+  var request = $.getJSON("http://localhost:3000/profiles/.json")
   .then(function(response) {
     var profiles = [];
     for(var i = 0; i < response.length; i++){
@@ -21,7 +21,7 @@ Profile.fetch = function(){
 
 Profile.create = function(profileData) {
   var self = this;
-  var url = "http://localhost:4000/profiles";
+  var url = "http://localhost:3000/profiles/.json";
   var request = $.ajax({
     url: url,
     method: "post",
