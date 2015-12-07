@@ -16,10 +16,20 @@ function authenticatedUser(req, res, next) {
 
 var profilesController = {
   getProfiles: function(req,res){
-    Profile.find({}).populate("stamps").then(function(profiles){
-      //response renders json of profiles
-      res.json(profiles);
-    });
+    console.log(req.params.format)
+    if (req.params.format){
+      Profile.find({}).populate("stamps").then(function(profiles){
+        //response renders json of profiles
+        res.json(profiles);
+        // res.render('index', {profiles})
+      });
+    }else{
+      Profile.find({}).populate("stamps").then(function(profiles){
+        res.render("index")
+      })
+    }
+
+
   },
   getProfile: function(req,res){
     Profile.findById(req.params.id).populate("stamps").then(function(profile){

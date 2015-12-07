@@ -4,18 +4,18 @@ var passport = require('passport')
 var usersController = require('../controllers/usersController');
 var profilesController = require('../controllers/profilesController');
 
-function authenticatedUser(req, res, next) {
-  console.log(req.isAuthenticated())
-  // If the user is authenticated, then we continue the execution
-  if (req.isAuthenticated()) return next();
-  res.redirect('/login');
-}
+// function authenticatedUser(req, res, next) {
+//   console.log(req.isAuthenticated())
+//   // If the user is authenticated, then we continue the execution
+//   if (req.isAuthenticated()) return next();
+//   res.redirect('/login');
+// }
 
 router.route('/profiles')
   .get(profilesController.getProfiles)
   .post(profilesController.addProfile)
 
-router.route('/')
+router.route('/:format?')
   .get(profilesController.getProfiles)
   .post(profilesController.addProfile)
 
