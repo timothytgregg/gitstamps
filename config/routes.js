@@ -4,12 +4,15 @@ var passport = require('passport')
 var usersController = require('../controllers/usersController');
 var profilesController = require('../controllers/profilesController');
 
-function authenticatedUser(req, res, next) {
-  console.log(req.isAuthenticated())
-  // If the user is authenticated, then we continue the execution
-  if (req.isAuthenticated()) return next();
-  res.redirect('/login');
-}
+// router.use('*', function(req, res, next) {
+//   var urls = ['/login',\'/auth/github.*'\]
+//   console.log(req.originalUrl)
+//   if (urls.indexOf(req.originalUrl) !== -1 || !req.isAuthenticated()){
+//     return next()
+//   }else{
+//     res.redirect('/login')
+//   }
+// });
 
 router.route('/login')
   .get(usersController.login)

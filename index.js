@@ -32,6 +32,13 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.get(/^(?!\/login)$/ ,function(req, res, next) {
+  // If the user is authenticated, then we continue the execution
+  // console.log(req.isAuthenticated())
+  if (req.isAuthenticated()) return next();
+  res.redirect('/login');
+})
+
 app.use(router)
 
 // app server located on port 3000
