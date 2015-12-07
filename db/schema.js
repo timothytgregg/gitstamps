@@ -1,25 +1,24 @@
 // requiring mongoose dependency
-var mongoose = require('mongoose');
+var mongoose = require('mongoose')
 
 // instantiate a name space for our Schema constructor defined by mongoose.
 var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId
 
-// defining schema for reminders
-var GitstampSchema = new Schema({
-  data: String
-})
+// defining schema for stamps
+var StampSchema = new Schema({
+  data: {
+    language: String
+  }
+});
 
-// defining schema for authors.
+// defining schema for profiles.
 var ProfileSchema = new Schema({
   username: String,
-  gitstamps: [GitstampSchema]
+  stamps: [StampSchema]
 })
 
-ProfileSchema.methods.sayHi = function(){
-  console.log("hi");
-}
-
-// setting models in mongoose utilizing schemas defined above
-var ProfileModel = mongoose.model("Profile", ProfileSchema)
-var GitstampModel = mongoose.model("Gitstamp", GitstampSchema)
+// setting models in mongoose utilizing schemas defined above, we'll be using
+// these frequently throughout our app
+mongoose.model("Profile", ProfileSchema)
+mongoose.model("Stamp", StampSchema)
