@@ -48,9 +48,10 @@ var profilesController = {
     });
   },
   addStamp:function(req,res){
+    var token = req.user.github.token;
     Profile.findById(req.params.id,function(err,docs){
       var stamp = new Stamp(req.body);
-      var git = stamp.setUp();
+      var git = stamp.setUp(token);
       stamp.getMsgs(docs.username, git);
       docs.stamps.push(stamp);
       docs.save(function(err){

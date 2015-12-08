@@ -34,9 +34,10 @@ ProfileView.prototype = {
     });
   },
   makeNewStamp:function(id,stampsDiv){
-    Stamp.create(id,{"data":{"language":"ANGLisH"}})
+    Stamp.create(id,{})
       .then(function(newStamp){
         var newStampView = new StampView(newStamp);
+        console.log(newStampView)
         stampsDiv.append(newStampView.render());
       })
   }
