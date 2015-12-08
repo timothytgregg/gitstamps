@@ -57,6 +57,8 @@ var profilesController = {
   addStamp:function(req,res){
     Profile.findById(req.params.id,function(err,docs){
       var stamp = new Stamp(req.body);
+      var git = stamp.setUp();
+      stamp.getMsgs(docs.username, git);
       docs.stamps.push(stamp);
       docs.save(function(err){
         if(!err){
