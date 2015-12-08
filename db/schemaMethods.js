@@ -21,7 +21,7 @@ var setUp = function() {
       // username: E.email,
       // password: E.pw
       type: "token",
-      token: E.a_c
+      token: E.ghKey
   });
   console.log("Logged in to Github!")
   return github;
