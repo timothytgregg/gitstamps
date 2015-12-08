@@ -1,13 +1,11 @@
 var E = require("../env.js")
-var GitHubApi = require("github");
-var Stamp = require("../models/stamp.js")
-var Profile = require("../models/stamp.js")
 
 
 // this function sets up a GH object on which subseqent calls will be made
 // login right now is handled via an access_token in env.js in the root
 // directory.  we'll try to make the login work with an oauth token later
 var setUp = function() {
+  var GitHubApi = require("github");
   var github = new GitHubApi({
       version: "3.0.0",
       protocol: "https",
@@ -25,72 +23,22 @@ var setUp = function() {
       type: "token",
       token: E.a_c
   });
+  console.log("Logged in to Github!")
   return github;
 }
-
 // this method takes a user name and a GH object (generated from setUp)
 // and retrieves all of a user's repos.  it then loops through each repo and
-// constructs an object where the keys are repo names and the values are objects
-// containing both language information and meta data.  stores this object in
-// the db, it does not return it.
-var getCommitMessages = function (user, github, id) {
-  github.repos.getFromUser({
-    user: user,
-    sort: "updated",
-    per_page: 100,
-  }, function(err, res) {
-    if (err){
-      console.log("CLOG ERROR: "+err)
-      return err;
-    }
-    var names = [];
-    var nameMsgMap = {};
-    for (var h=0; h < res.length; h++){
-      names.push(res[h].name);
-    }
-    var callsDone = 0;
-    for (var i = 0; i < names.length; i++) {
-      github.repos.getCommits({
-        user: user,
-        repo: names[i],
-        per_page: 100
-      }, function(error, response){
-        if (error){
-          console.log("CLOG ERROR: "+error)
-          return error;
-        }
-        var msgs = [];
-        for (var a = 0; a < response.length; a++){
-          msgs.push(response[a]['commit']['message'])
-        }
-          nameMsgMap[names[this.i]] = msgs;
-        if (++callsDone == names.length-1){
-          //SAVE IN DB HERE
-
-          // Stamp.findOneAndUpdate({id:id},{data:{languages: nameMsgMap}}).then(function(err, query){
-          //   if (err){
-          //     console.log("ERROR: "err);
-          //   } else{
-          //     console.log("Update Successful!")
-          //   }
-          // })
-        }
-      }.bind({i:i}))
-    }
-  })
-}
-// this method takes a user name and a GH object (generated from setUp)
-// and retrieves all of a user's repos.  it then loops through each repo and
-// constructs an object where the keys are repo names and the values are arrays
-// of commit messages.  this object is then stored in the db, not returned.
-var getLangs = function(user, github, id) {
+// constructs an object where the keys are repo names and the values are language objects.  this object is then stored in the db, not returned.
+var getLangs = function(user, github) {
+  var self = this;
   github.repos.getFromUser({
     user: user,
     sort: "updated",
     per_page: 100
   }, function(err, res) {
+    var that = self;
     if (err){
-      console.log("CLOG ERROR: "+err)
+      console.log("CLOG @ repos ERROR: "+err)
       return err;
     }
     var names = [];
@@ -100,22 +48,96 @@ var getLangs = function(user, github, id) {
     }
     var callsDone = 0;
     for (var i = 0; i < names.length; i++) {
+      callsDone++;
       github.repos.getLanguages({
         user: user,
         repo: names[i],
         per_page: 100
 
       }, function(error, response){
+        var thar = that;
         if (error){
-          console.log("CLOG ERROR: "+error)
+          console.log("CLOG ERROR @langs from @"+names[this.i]+": "+error)
           return error;
         }
-        nameLangMap[names[this.i]] = response;
-        if (++callsDone == names.length-1){
-          //SAVE IN DB HERE
-
+        nameLangMap[names[this.i].replace(/\./g,' ')] = response;
+        if (this.callsDone == names.length-1){
+          thar.data.languages = nameLangMap;
+          thar.save(function(err){
+            if (err){
+              console.log(err);
+              return;
+            } else{
+              console.log("Saved successfully!");
+              return;
+            }
+          })
         }
-      }.bind({i:i}))
+      }.bind({
+              i:i,
+              callsDone:callsDone
+            }))
+    }
+  })
+}
+
+// this method takes a user name and a GH object (generated from setUp)
+// and retrieves all of a user's repos.  it then loops through each repo and
+// constructs an object where the keys are repo names and the values are objects
+// containing both language information and meta data.  stores this object in
+// the db, it does not return it.
+var getCommitMessages = function (user, github) {
+  var self = this;
+  github.repos.getFromUser({
+    user: user,
+    sort: "updated",
+    per_page: 100,
+  }, function(err, res) {
+    var that = self;
+    if (err){
+      console.log("CLOG ERROR @repos: "+err)
+      return err;
+    }
+    var names = [];
+    var nameMsgMap = {};
+    for (var h=0; h < res.length; h++){
+      names.push(res[h].name);
+    }
+    // try to get access to callsDone with bind
+    var callsDone = 0;
+    for (var i = 0; i < names.length; i++) {
+      callsDone++;
+      github.repos.getCommits({
+        user: user,
+        repo: names[i],
+        per_page: 100
+      }, function(error, response){
+        var thar = that;
+        if (error){
+          console.log("CLOG ERROR @msgs from @"+names[this.i]+": "+error)
+          return error;
+        }
+        var msgs = [];
+        for (var a = 0; a < response.length; a++){
+          msgs.push(response[a]['commit']['message'])
+        }
+          nameMsgMap[names[this.i].replace(/\./g,' ')] = msgs;
+        if (this.callsDone == names.length){
+          thar.data.commitMessages = nameMsgMap;
+          thar.save(function(err){
+            if (err){
+              console.log(err);
+              return;
+            } else{
+              console.log("Saved successfully!");
+              return;
+            }
+          })
+        }
+      }.bind({
+              i:i,
+              callsDone:callsDone
+            }))
     }
   })
 }
@@ -152,5 +174,6 @@ var parseMsgs = function (id) {
 
 module.exports = {
   setUp: setUp,
-  getCommitMessages: getCommitMessages
+  getCommitMessages: getCommitMessages,
+  getLangs: getLangs
 }

@@ -1,6 +1,7 @@
-var schemaMethods = require("./schemaMethods.js")
 // requiring mongoose dependency
+var E = require("../env.js")
 var mongoose = require('mongoose')
+var SchemaMethods = require("./schemaMethods")
 
 // instantiate a name space for our Schema constructor defined by mongoose.
 var Schema = mongoose.Schema,
@@ -8,17 +9,21 @@ var Schema = mongoose.Schema,
 
 // defining schema for stamps
 var StampSchema = new Schema({
+  createdAt: Date,
   data: {
-    languages: Array,
-    commitMessages: Array,
+    languages: Object,
+    commitMessages: Object,
     avgMsg: Number,
     totalLangs: Array
   }
 });
-
-ProfileSchema.methods.test = function(){
-  schemaMethods.getCommitMessages(this.username,schemaMethods.setUp(), this._id)
-}
+// see schemaMethods for a description of this method
+StampSchema.methods.setUp = SchemaMethods.setUp;
+// see schemaMethods for a description of this method
+StampSchema.methods.getMsgs = SchemaMethods.getCommitMessages;
+// see schemaMethods for a description of this method
+StampSchema.methods.getLangs = SchemaMethods.getLangs;
+//
 
 // defining schema for profiles.
 var ProfileSchema = new Schema({
