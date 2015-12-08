@@ -32,12 +32,12 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.get(/^(?!\/login)$/ ,function(req, res, next) {
-  // If the user is authenticated, then we continue the execution
-  // console.log(req.isAuthenticated())
+//working middleware for routes starting with /profile
+app.all('/profiles*', checkUser);
+function checkUser(req, res, next) {
   if (req.isAuthenticated()) return next();
   res.redirect('/login');
-})
+}
 
 app.use(router)
 

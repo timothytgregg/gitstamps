@@ -41,7 +41,8 @@ var UserSchema = new Schema({
     token: String,
     username: String,
     displayName: String
-  }
+  }//,
+  // follows: [ProfileSchema]
 });
 
 // setting models in mongoose utilizing schemas defined above, we'll be using
