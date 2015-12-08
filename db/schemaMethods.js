@@ -2,6 +2,8 @@ var E = require("../env.js")
 var GitHubApi = require("github");
 var Stamp = require("../models/stamp.js")
 var Profile = require("../models/stamp.js")
+
+
 // this function sets up a GH object on which subseqent calls will be made
 // login right now is handled via an access_token in env.js in the root
 // directory.  we'll try to make the login work with an oauth token later
@@ -63,13 +65,15 @@ var getCommitMessages = function (user, github, id) {
         }
           nameMsgMap[names[this.i]] = msgs;
         if (++callsDone == names.length-1){
-          Stamp.findOneAndUpdate({id:id},{data:{languages: nameMsgMap}}).then(function(err, query){
-            if (err){
-              console.log("ERROR: "err);
-            } else{
-              console.log("Update Successful!")
-            }
-          })
+          //SAVE IN DB HERE
+
+          // Stamp.findOneAndUpdate({id:id},{data:{languages: nameMsgMap}}).then(function(err, query){
+          //   if (err){
+          //     console.log("ERROR: "err);
+          //   } else{
+          //     console.log("Update Successful!")
+          //   }
+          // })
         }
       }.bind({i:i}))
     }
@@ -108,9 +112,8 @@ var getLangs = function(user, github, id) {
         }
         nameLangMap[names[this.i]] = response;
         if (++callsDone == names.length-1){
-          console.log("DONE");
-          console.log(nameLangMap);
-          // return nameLangMap;
+          //SAVE IN DB HERE
+
         }
       }.bind({i:i}))
     }
@@ -136,7 +139,7 @@ var parseLangs = function (id) {
         }
       }
     }
-    console.log(stats);
+    //SAVE IN DB HERE
   });
 }
 // this method should only be called after getCommitMessages.  it parses through
@@ -144,6 +147,7 @@ var parseLangs = function (id) {
 // it stores in a column
 var parseMsgs = function (id) {
 
+//SAVE IN DB HERE
 }
 
 module.exports = {
