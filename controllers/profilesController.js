@@ -44,9 +44,7 @@ var profilesController = {
     });
   },
   deleteProfile:function(req,res){
-    // User.findByIdAndUpdate()
     Profile.findByIdAndRemove(req.params.id).then(function(profile){
-      console.log(profile)
       res.json({success: true});
     });
   },

@@ -33,3 +33,16 @@ Profile.create = function(profileData) {
   });
   return request;
 };
+
+Profile.delete = function(id){
+  var self = this;
+  var url = "http://localhost:3000/profiles/"+id;
+  var request = $.ajax({
+    url:url,
+    method:"delete"
+  }).then(function(bool){
+    console.log(bool)
+  });
+  
+  return request;
+}
