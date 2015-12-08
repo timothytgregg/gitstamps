@@ -1,3 +1,4 @@
+var schemaMethods = require("./schemaMethods.js")
 // requiring mongoose dependency
 var mongoose = require('mongoose')
 
@@ -8,9 +9,16 @@ var Schema = mongoose.Schema,
 // defining schema for stamps
 var StampSchema = new Schema({
   data: {
-    language: String
+    languages: Array,
+    commitMessages: Array,
+    avgMsg: Number,
+    totalLangs: Array
   }
 });
+
+ProfileSchema.methods.test = function(){
+  schemaMethods.getCommitMessages(this.username,schemaMethods.setUp(), this._id)
+}
 
 // defining schema for profiles.
 var ProfileSchema = new Schema({
