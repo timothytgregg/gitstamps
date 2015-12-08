@@ -1,10 +1,7 @@
-var E = require("../env.js")
-
-
 // this function sets up a GH object on which subseqent calls will be made
 // login right now is handled via an access_token in env.js in the root
 // directory.  we'll try to make the login work with an oauth token later
-var setUp = function() {
+var setUp = function(token) {
   var GitHubApi = require("github");
   var github = new GitHubApi({
       version: "3.0.0",
@@ -16,12 +13,10 @@ var setUp = function() {
 
       }
   });
+
   github.authenticate({
-      // type: "basic",
-      // username: E.email,
-      // password: E.pw
       type: "token",
-      token: E.ghKey
+      token: token
   });
   console.log("Logged in to Github!")
   return github;
