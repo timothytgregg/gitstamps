@@ -17,19 +17,20 @@ var StampSchema = new Schema({
     totalLangs: Array
   }
 });
-// see schemaMethods for a description of this method
-StampSchema.methods.setUp = SchemaMethods.setUp;
-// see schemaMethods for a description of this method
-StampSchema.methods.getMsgs = SchemaMethods.getCommitMessages;
-// see schemaMethods for a description of this method
-StampSchema.methods.getLangs = SchemaMethods.getLangs;
-//
 
 // defining schema for profiles.
 var ProfileSchema = new Schema({
   username: String,
   stamps: [StampSchema]
 })
+
+// see schemaMethods for a description of this method
+ProfileSchema.methods.setUp = SchemaMethods.setUp;
+// see schemaMethods for a description of this method
+ProfileSchema.methods.getMsgs = SchemaMethods.getCommitMessages;
+// see schemaMethods for a description of this method
+ProfileSchema.methods.getLangs = SchemaMethods.getLangs;
+//
 
 var UserSchema = new Schema({
   local : {
