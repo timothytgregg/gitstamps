@@ -27,3 +27,4 @@ build/Release
 node_modules
 env.js
 public/js/env.js
+tmp.js
