@@ -34,32 +34,14 @@ Profile.create = function(profileData) {
   return request;
 };
 
-Profile.prototype.getRepos = function(){
-  var user = this.username;
-  var request = $.getJSON("https://api.github.com/users/"+user+"/repos?access_token="+ghKey)
-    .then(function(repos){
-      var urls = [];
-      repos.forEach(function(repo){
-        urls.push(Profile.getRepoLanguage(repo.languages_url));
-      })
-      return urls;
-    })
+Profile.prototype.delete = function(){
+  var url = "http://localhost:3000/profiles/" + this.id;
+  var request = $.ajax( {url: url, method: "delete"} );
   return request;
 }
 
-Profile.getRepoLanguage = function(lang_url){
-  var request = $.getJSON(lang_url+"?access_token="+ghKey)
-    .then(function(lang){return lang})
+Profile.prototype.unfollow = function(){
+  var url = "http://localhost:3000/profiles/"+this.id+"/unfollow";
+  var request = $.ajax( {url: url, method: "delete"} );
   return request;
-}
-
-Profile.prototype.getLanguages = function(){
-  var self = this;
-  var repos = this.getRepos()
-    .then(function(urls){
-      urls.forEach(function(url){
-        url.then(function(l){console.log(l)})
-      })
-    })
-
 }
