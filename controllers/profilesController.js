@@ -52,8 +52,9 @@ var profilesController = {
     var token = req.user.github.token;
     Profile.findById(req.params.id,function(err,docs){
       var stamp = new Stamp(req.body);
-      var git = stamp.setUp(token);
-      Functions.getCommitMessagesC(docs.username, git, stamp, docs)
+      var git = Functions.setUp(token);
+      Functions.getCommitMessagesC(docs.username, git, stamp, docs, res);
+      // res.json(stamp);
       // docs.stamps.pu sh(stamp);
       // docs.save(function(err){
       //   if(!err){
