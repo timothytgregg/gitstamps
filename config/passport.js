@@ -1,12 +1,12 @@
 var GitHubStrategy = require('passport-github').Strategy;
 var User            = require('../models/user');
-var env = require('../env.js');
+// var env = require('../env.js');
 
 module.exports = function(passport){
   passport.use(new GitHubStrategy({
-    clientID: env.clientID,
-    clientSecret: env.clientSecret,
-    callbackURL: env.callbackURL
+    clientID: process.env.clientID,
+    clientSecret: process.env.clientSecret,
+    callbackURL: process.env.callbackUrl
   }, function(token, secret, profile, done){
     process.nextTick(function(){
       User.findOne({'github.id': profile.id}, function(err, user){
@@ -23,7 +23,7 @@ module.exports = function(passport){
           newUser.github.token = token;
           newUser.github.username = profile.username;
           newUser.github.displayName = profile.displayName;
-          
+
           newUser.save(function(err){
             if(err) throw err;
             return done(null, newUser);
