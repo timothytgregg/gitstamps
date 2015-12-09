@@ -6,6 +6,8 @@ var newProfileView = function(profile){
     self.checkProfile().then(function(result){
       if (result.exists){
         self.createProfile();
+      }else{
+        self.$el.find("input").val('');
       }
     })
   })
