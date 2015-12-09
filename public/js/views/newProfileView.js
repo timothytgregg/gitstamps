@@ -1,10 +1,10 @@
 var newProfileView = function(profile){
   var self = this;
   self.$el = $(".newProfileView");
-  $(".createProfile").on("click", function(event) {
+  $(".newProfile").on("submit", function(){
     event.preventDefault();
     self.createProfile();
-  });
+  })
 };
 
 newProfileView.prototype = {

@@ -22,10 +22,8 @@ ProfileView.prototype = {
 
     var unfollow = self.$el.find(".unfollow");
     unfollow.on("click", function(){
-      Profile.delete(self.profile.id).then(function(){
-        Profile.fetchAll();
-      })
-    })
+      self.profile.delete().then(function(){self.$el.fadeOut()})
+    });
   },
   profileTemplate:function(profile){
     var html = $("<div/>")
