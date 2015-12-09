@@ -28,6 +28,7 @@ var StampSchema = new Schema({
 
 // defining schema for profiles.
 var ProfileSchema = new Schema({
+  createdAt: Date,
   username: String,
   stamps: [StampSchema]
 })

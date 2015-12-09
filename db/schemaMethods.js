@@ -96,6 +96,7 @@ var getLangsC = function(user, github, stamp, profile, names, resp){
         stamp.data.langTotals = parseLangs(nameLangMap); // see this function below
         stamp.data.langAverages = langAverages(stamp.data.langTotals) // see this function below
         stamp.data.averageMessageLength = msgAverages(stamp.data.commitMessages) // see this function below
+        stamp.createdAt = Date(); // add time stamp
         profile.stamps.push(stamp); // push the stamp onto the owner profile's array of stamps
         resp.json(stamp) // repsond with json
         profile.save(function(err, profile){ // save the profile

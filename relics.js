@@ -1,6 +1,7 @@
 // relics
 
 // none of these functions are used.  but I didn't want to throw them away so they're here.
+var E = require("./env.js")
 
 var mongoose = require("mongoose")
 mongoose.connect('mongodb://localhost/chase-express')
@@ -13,8 +14,8 @@ var setUp = function(token) {
   var github = new GitHubApi({
       version: "3.0.0",
       protocol: "https",
-      host: "api.github.com", // should be api.github.com for GitHub
-      pathPrefix: "", // for some GHEs; none for GitHub
+      host: "api.github.com",
+      pathPrefix: "",
       timeout: 5000,
       headers: {
       }
@@ -289,8 +290,8 @@ var getLangs = function(user, github) {
   })
 }
 var testModel = new Stamp({})
-getCommitMessagesR('solowt', git);
 var git = setUp(E.ghKey)
+getCommitMessagesR('solowt', git);
 
 // module.exports = {
 //   getCommitMessagesR: getCommitMessagesR,

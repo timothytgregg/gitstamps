@@ -59,7 +59,11 @@ var profilesController = {
         console.log(req.body.username + " already in the database")
         followProfile(req.user._id,profile,res)
       }else{
-        var newProfile = new Profile(req.body).save(function(err){
+        var profileObject = {
+          createdAt: Date(),
+          username: req.body.username
+        }
+        var newProfile = new Profile(profileObject).save(function(err){
           if(!err){
             console.log(req.body.username + " saved in the database")
             return newProfile
