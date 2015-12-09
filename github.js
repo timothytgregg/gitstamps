@@ -44,8 +44,8 @@ var setUp = function() {
       // type: "basic",
       // username: E.email,
       // password: E.pw
-      type: "token",
-      token: E.a_c
+      // type: "token",
+      // token: E.a_c
   });
   return github;
 }
