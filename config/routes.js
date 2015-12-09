@@ -24,6 +24,9 @@ router.route('/profiles/:id')
   .patch(profilesController.updateProfile)
   .delete(profilesController.deleteProfile)
 
+router.route('/profiles/:id/unfollow')
+  .delete(usersController.unfollowProfile)
+
 router.route('/profiles/:id/stamps')
   .get(profilesController.getStamps)
   .post(profilesController.addStamp)

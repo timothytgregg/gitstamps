@@ -55,29 +55,6 @@ var profilesController = {
         }).then(function(newProfile){followProfile(req.user._id,newProfile,res)});
       }
     })
-    //   if(profile){
-    //     User.findById(req.user._id,function(err,docs){
-    //       docs.follows.push(profile._id);
-    //       docs.save(function(err){
-    //         if(!err){
-    //           res.json(profile)
-    //         }
-    //       })
-    //     })
-    //   } else {
-    //     new Profile(req.body).save().then(function(profile){
-    //       User.findById(req.user._id, function(err,docs){
-    //         docs.follows.push(profile._id);
-    //         docs.save(function(err){
-    //           console.log(profile.username+ " added to the db")
-    //           if(!err){
-    //             res.json(profile)
-    //           }
-    //         });
-    //       });
-    //     });
-    //   }
-    // })
   },
   updateProfile:function(req,res){
     Profile.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}).then(function(profile){
@@ -89,9 +66,6 @@ var profilesController = {
       console.log("removing "+profile.username+" from the db...")
       res.json({success: true});
     });
-  },
-  unfollowProfile:function(req,res){
-
   },
   getStamps:function(req,res){
     Profile.findById(req.params.id).populate("stamps").then(function(profile){
