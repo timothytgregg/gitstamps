@@ -39,14 +39,3 @@ Profile.prototype.delete = function(){
   var request = $.ajax( {url: url, method: "delete"} );
   return request;
 }
-
-Profile.fetchAll = function(){
-  $('.profiles').html('');
-  Profile.fetch().then(function(profiles){
-    profiles.forEach(function(profile){
-      var view = new ProfileView(profile)
-      view.render();
-    })
-    new newProfileView();
-  });
-}
