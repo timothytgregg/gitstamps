@@ -3,11 +3,10 @@ var StampView = function(stamp){
 }
 
 StampView.prototype = {
-  render: function(stampsDiv){
+  getLangSummary:function(){
     var langTotals = this.stamp.data.langTotals;
-
-    var langArray = [];
     var langSum = 0;
+    var langArray = [];
     for (lang in langTotals){
       langArray.push([lang,langTotals[lang]])
       langSum += langTotals[lang];
@@ -16,6 +15,12 @@ StampView.prototype = {
       langArray[i].push(langArray[i][1]/langSum*100)
     }
     langArray.sort(function(b,a){return a[1]-b[1]})
+    return {langArray:langArray,langSum:langSum};
+  },
+  render: function(stampsDiv){
+    var langSummary = this.getLangSummary();
+    var langArray = langSummary.langArray;
+    var langSum = langSummary.langSum;
     //get sum of total languages
     var xScale = d3.scale.linear().domain([0,langSum]).range([0,500])
     var el = $("<svg/>")[0];
@@ -48,8 +53,8 @@ function langHover(d){
     .style('top',(d3.event.pageY+10)+"px")
     .style('left',(d3.event.pageX+10)+"px")
     .text(d[0]+": "+d[1]+ " bytes, "+d3.round(d[2],2)+"%")
-    .transition().duration(0.5).style('opacity',1)
+    .transition().duration(500).style('opacity',1)
 }
 function langUnhover(d){
-  d3.select('.tooltip').transition().duration(0.5).style('opacity',0)
+  d3.select('.tooltip').transition().duration(500).style('opacity',0)
 }
