@@ -1,7 +1,7 @@
 var Stamp = function(info){
   this.data = info.data;
-  this.language = info.data.language;
-  this.id = info.id
+  // this.language = info.data.language;
+  this.id = info._id
 }
 
 Stamp.create = function(profileId,stampData) {

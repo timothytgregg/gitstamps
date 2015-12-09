@@ -4,7 +4,8 @@ var StampView = function(stamp){
 
 StampView.prototype = {
   render: function(){
-    var el = $("<p>" + this.stamp.data.language + "</p>");
+    console.log(this.stamp)
+    var el = $("<p>" + this.stamp.data + "</p>");
     return(el)
   }
 }
