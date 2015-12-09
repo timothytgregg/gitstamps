@@ -13,7 +13,7 @@ var StampSchema = new Schema({
   data: {
     languages: Object,
     commitMessages: Object,
-    avgMsg: Number,
+    averageMessageLength: Number,
     langTotals: Object,
     langAverages: Object
   }
