@@ -12,13 +12,18 @@ function error(response, message){
 function followProfile(userId,profile,res){
   User.findById(userId, function(err,docs){
     if(err) return err;
-    docs.follows.push(profile._id);
-    docs.save(function(error){
-      console.log(profile.username+ " followed by "+docs.github.username)
-      if(!error){
-        res.json(profile)
-      }
-    });
+    if (docs.follows.indexOf(profile._id)==-1){
+      docs.follows.push(profile._id);
+      docs.save(function(error){
+        console.log(profile.username+ " followed by "+docs.github.username)
+        if(!error){
+          res.json(profile)
+        }
+      });
+    }else{
+      console.log(docs.github.username+" already follows "+profile.username)
+      res.json({success:false})
+    }
   });
 }
 
@@ -45,7 +50,9 @@ var profilesController = {
   addProfile:function(req,res){
     Profile.findOne({'username':req.body.username}, function(err, profile){
       if(err) return err;
-      // If the profile already exists, just return that profile.
+      // If the profile doesn't exist, make it and follow it
+      // If the profile exists and the user doesn't follow it, follow it
+      // If the profile exists and the user follows it, do nothing
       if (profile){
         console.log(req.body.username + " already in the database")
         followProfile(req.user._id,profile,res)
