@@ -9,6 +9,19 @@ function error(response, message){
   response.json({error: message})
 }
 
+function followProfile(userId,profile,res){
+  User.findById(userId, function(err,docs){
+    if(err) return err;
+    docs.follows.push(profile._id);
+    docs.save(function(error){
+      console.log(profile.username+ " followed by "+docs.github.username)
+      if(!error){
+        res.json(profile)
+      }
+    });
+  });
+}
+
 var profilesController = {
   getProfiles: function(req,res){
     if (req.params.format){
@@ -27,40 +40,21 @@ var profilesController = {
     });
   },
   addProfile:function(req,res){
-    // Profile.findOne({'username': req.body}, function(err, profile){
-    //   if(err) return err;
-    //   // If the profile already exists, just return that user.
-    //   if(profile){
-    //     return profile;
-    //   } else {
-    //     var newProfile = new Profile(req.body)
-    //     newProfile.save(function(err){
-    //       if(!err){
-    //         return profile;
-    //       }
-    //     })
-    //   }
-    // }).then(function(profile){
-    //   User.findById(req.user._id,function(err,docs){
-    //     docs.follows.push(profile._id);
-    //     docs.save(function(err){
-    //       if(!err){
-    //         res.json(profile)
-    //       }
-    //     })
-    //   })
-    // })
-    new Profile(req.body).save().then(function(profile){
-      User.findById(req.user._id, function(err,docs){
-        docs.follows.push(profile._id);
-        docs.save(function(err){
-          console.log(profile.username+ " added to the db")
+    Profile.findOne({'username':req.body.username}, function(err, profile){
+      if(err) return err;
+      // If the profile already exists, just return that profile.
+      if (profile){
+        console.log(req.body.username + " already in the database")
+        followProfile(req.user._id,profile,res)
+      }else{
+        var newProfile = new Profile(req.body).save(function(err){
           if(!err){
-            res.json(profile)
+            console.log(req.body.username + " saved in the database")
+            return newProfile
           }
-        });
-      });
-    });
+        }).then(function(newProfile){followProfile(req.user._id,newProfile,res)});
+      }
+    })
   },
   updateProfile:function(req,res){
     Profile.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}).then(function(profile){

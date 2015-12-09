@@ -39,3 +39,9 @@ Profile.prototype.delete = function(){
   var request = $.ajax( {url: url, method: "delete"} );
   return request;
 }
+
+Profile.prototype.unfollow = function(){
+  var url = "http://localhost:3000/profiles/"+this.id+"/unfollow";
+  var request = $.ajax( {url: url, method: "delete"} );
+  return request;
+}
