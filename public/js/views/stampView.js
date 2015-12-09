@@ -12,6 +12,9 @@ StampView.prototype = {
       langArray.push([lang,langTotals[lang]])
       langSum += langTotals[lang];
     }
+    for (var i=0;i<langArray.length;i++){
+      langArray[i].push(langArray[i][1]/langSum*100)
+    }
     langArray.sort(function(b,a){return a[1]-b[1]})
     //get sum of total languages
     var xScale = d3.scale.linear().domain([0,langSum]).range([0,500])
@@ -42,11 +45,11 @@ StampView.prototype = {
 
 function langHover(d){
   d3.select('.tooltip')
-    .style('top',d3.event.clientY+"px")
-    .style('left',d3.event.clientX+"px")
-    .style('visibility','visible')
-    .text(d[0]+": "+d[1]+ " bytes")
+    .style('top',(d3.event.pageY+10)+"px")
+    .style('left',(d3.event.pageX+10)+"px")
+    .text(d[0]+": "+d[1]+ " bytes, "+d3.round(d[2],2)+"%")
+    .transition().duration(0.5).style('opacity',1)
 }
 function langUnhover(d){
-  d3.select('.tooltip').style('visibility','hidden')
+  d3.select('.tooltip').transition().duration(0.5).style('opacity',0)
 }
