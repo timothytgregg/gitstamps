@@ -45,6 +45,7 @@ var profilesController = {
   },
   deleteProfile:function(req,res){
     Profile.findByIdAndRemove(req.params.id).then(function(profile){
+      console.log("removing "+profile.username+" from the db...")
       res.json({success: true});
     });
   },

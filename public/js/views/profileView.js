@@ -4,7 +4,7 @@ var ProfileView = function(profile){
   this.$el = $("<div class='profile'>");
   this.render();
 
-  $("body").append(this.$el);
+  $(".profiles").append(this.$el);
 };
 
 ProfileView.prototype = {
@@ -22,7 +22,9 @@ ProfileView.prototype = {
 
     var unfollow = self.$el.find(".unfollow");
     unfollow.on("click", function(){
-      self.removeProfile(self.profile.id);
+      Profile.delete(self.profile.id).then(function(){
+        Profile.fetchAll();
+      })
     })
   },
   profileTemplate:function(profile){
@@ -44,12 +46,6 @@ ProfileView.prototype = {
       .then(function(newStamp){
         var newStampView = new StampView(newStamp);
         stampsDiv.append(newStampView.render());
-      })
-  },
-  removeProfile:function(id){
-    Profile.delete(id)
-      .then(function(){
-        console.log("profile deleted from db")
       })
   }
 };

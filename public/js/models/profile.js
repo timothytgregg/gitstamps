@@ -43,6 +43,16 @@ Profile.delete = function(id){
   }).then(function(bool){
     console.log(bool)
   });
-  
   return request;
+}
+
+Profile.fetchAll = function(){
+  $('.profiles').html('');
+  Profile.fetch().then(function(profiles){
+    profiles.forEach(function(profile){
+      var view = new ProfileView(profile)
+      view.render();
+    })
+    new newProfileView();
+  });
 }
