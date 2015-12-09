@@ -34,8 +34,19 @@ StampView.prototype = {
       .style('fill',function(d){
         return githubColors[d[0]]
       })
-      // .on("mouseover",langHover)
-      // .on("mousemove",langHover)
-      // .on("mouseleave",langUnhover);
+      .on("mouseover",langHover)
+      .on("mousemove",langHover)
+      .on("mouseleave",langUnhover);
   }
+}
+
+function langHover(d){
+  d3.select('.tooltip')
+    .style('top',d3.event.clientY+"px")
+    .style('left',d3.event.clientX+"px")
+    .style('visibility','visible')
+    .text(d[0]+": "+d[1]+ " bytes")
+}
+function langUnhover(d){
+  d3.select('.tooltip').style('visibility','hidden')
 }
