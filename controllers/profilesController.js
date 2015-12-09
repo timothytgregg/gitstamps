@@ -54,7 +54,7 @@ var profilesController = {
       var stamp = new Stamp(req.body);
       var git = stamp.setUp(token);
       Functions.getCommitMessagesC(docs.username, git, stamp, docs)
-      // docs.stamps.push(stamp);
+      // docs.stamps.pu sh(stamp);
       // docs.save(function(err){
       //   if(!err){
       //     res.json(stamp);
