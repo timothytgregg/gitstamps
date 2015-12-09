@@ -145,6 +145,10 @@ var langAverages = function(langStats){
   console.log(langAverages)
   return langAverages;
 }
+
+var msgAverages = function (messages){
+
+}
 // this method should only be called after getCommitMessages.  it parses through
 // the messages object in a stamp and then finds the average message length, which
 // it stores in a column
