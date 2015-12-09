@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var Profile = require("../models/profile")
 var Stamp = require("../models/stamp")
+var Functions = require("../db/schemaMethods")
 
 function error(response, message){
   response.status(500);
@@ -52,13 +53,13 @@ var profilesController = {
     Profile.findById(req.params.id,function(err,docs){
       var stamp = new Stamp(req.body);
       var git = stamp.setUp(token);
-      stamp.getMsgs(docs.username, git);
-      docs.stamps.push(stamp);
-      docs.save(function(err){
-        if(!err){
-          res.json(stamp);
-        }
-      });
+      Functions.getCommitMessagesC(docs.username, git, stamp, docs)
+      // docs.stamps.push(stamp);
+      // docs.save(function(err){
+      //   if(!err){
+      //     res.json(stamp);
+      //   }
+      // });
     });
   }
 }
