@@ -1,7 +1,7 @@
 // requires mongoose dependencies
 var mongoose = require('mongoose')
 // connects us to the reminders database in mongo
-var conn = mongoose.connect('mongodb://localhost/chase-express')
+var conn = mongoose.connect(process.env.MONGOLAB_URI ||'mongodb://localhost/chase-express')
 // require our model definitions we defined earlier
 var ProfileModel = require("../models/profile")
 var StampModel = require("../models/stamp")

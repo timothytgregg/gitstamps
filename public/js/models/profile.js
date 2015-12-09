@@ -5,7 +5,7 @@ var Profile = function(info){
 };
 
 Profile.fetch = function(){
-  var request = $.getJSON("http://localhost:3000/profiles.json")
+  var request = $.getJSON("https://gitstamps.herokuapp.com/profiles.json")
   .then(function(response) {
     var profiles = [];
     for(var i = 0; i < response.length; i++){
@@ -21,7 +21,7 @@ Profile.fetch = function(){
 
 Profile.create = function(profileData) {
   var self = this;
-  var url = "http://localhost:3000/profiles.json";
+  var url = "https://gitstamps.herokuapp.com/profiles.json";
   var request = $.ajax({
     url: url,
     method: "post",
@@ -35,13 +35,13 @@ Profile.create = function(profileData) {
 };
 
 Profile.prototype.delete = function(){
-  var url = "http://localhost:3000/profiles/" + this.id;
+  var url = "https://gitstamps.herokuapp.com/profiles/" + this.id;
   var request = $.ajax( {url: url, method: "delete"} );
   return request;
 }
 
 Profile.prototype.unfollow = function(){
-  var url = "http://localhost:3000/profiles/"+this.id+"/unfollow";
+  var url = "https://gitstamps.herokuapp.com/profiles/"+this.id+"/unfollow";
   var request = $.ajax( {url: url, method: "delete"} );
   return request;
 }

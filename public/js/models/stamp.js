@@ -6,7 +6,7 @@ var Stamp = function(info){
 
 Stamp.create = function(profileId,stampData) {
   var self = this;
-  var url = "http://localhost:3000/profiles/"+profileId+"/stamps";
+  var url = "https://gitstamps.herokuapp.com/profiles/"+profileId+"/stamps";
   var request = $.ajax({
     url: url,
     method: "post",
