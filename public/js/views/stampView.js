@@ -4,8 +4,11 @@ var StampView = function(stamp){
 
 StampView.prototype = {
   render: function(){
-    console.log(this.stamp)
-    var el = $("<p>" + this.stamp.data + "</p>");
+    var langTotals = this.stamp.data.langTotals;
+    var el = $("<ul/>");
+    for (lang in langTotals){
+      el.append("<li>"+lang+": "+langTotals[lang]+" bytes")
+    }
     return(el)
   }
 }

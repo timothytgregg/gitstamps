@@ -21,6 +21,21 @@ var setUp = function(token) {
   console.log("Logged in to Github!")
   return github;
 }
+
+// this method checks to see if a user exists for the requested username
+var checkGHUser = function (github, user, res) {
+  github.repos.getFromUser({
+    user:user,
+    per_page:1
+  }, function(err,result){
+    if (err){
+      res.json({exists: false})
+    }else{
+      res.json({exists:true})
+    }
+  })
+}
+
 // this method takes a user name and a GH object (generated from setUp)
 // and retrieves all of a user's repos.  it then loops through each repo and
 // constructs an object where the keys are repo names and the values are language objects.  this object is then stored in the db, not returned.
@@ -160,4 +175,5 @@ var parseMsgs = function (id) {
 module.exports = {
   setUp: setUp,
   getCommitMessagesC: getCommitMessagesC,
+  checkGHUser: checkGHUser
 }
