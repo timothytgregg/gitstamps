@@ -24,15 +24,18 @@ function followProfile(userId,profile,res){
 
 var profilesController = {
   getProfiles: function(req,res){
-    if (req.params.format){
-      Profile.find({}).populate("stamps").then(function(profiles){
-        res.json(profiles);//response renders json of profiles
-      });
-    }else{
-      Profile.find({}).populate("stamps").then(function(profiles){
-        res.render("index")
-      })
-    }
+    User.findById(req.user._id, function(err, user){
+      var userProfiles = user.follows
+      if (req.params.format){
+        Profile.find({'_id': {$in: userProfiles}}).populate("stamps").then(function(profiles){
+          res.json(profiles);//response renders json of profiles
+        });
+      }else{
+        Profile.find({'_id': {$in: userProfiles}}).populate("stamps").then(function(profiles){
+          res.render("index")
+        })
+      }
+    })
   },
   getProfile: function(req,res){
     Profile.findById(req.params.id).populate("stamps").then(function(profile){
