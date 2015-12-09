@@ -4,7 +4,7 @@ var ProfileView = function(profile){
   this.$el = $("<div class='profile'>");
   this.render();
 
-  $("body").append(this.$el);
+  $(".profiles").append(this.$el);
 };
 
 ProfileView.prototype = {
@@ -19,10 +19,16 @@ ProfileView.prototype = {
     newStamp.on("click",function(){
       self.makeNewStamp(self.profile.id,stampsDiv);
     });
+
+    var unfollow = self.$el.find(".unfollow");
+    unfollow.on("click", function(){
+      self.profile.delete().then(function(){self.$el.fadeOut()})
+    });
   },
   profileTemplate:function(profile){
     var html = $("<div/>")
     html.append("<h3>" + profile.username + "</h3>");
+    html.append("<button class='unfollow'>Unfollow</button>")
     html.append("<button class='stamp'>Add Stamp</button>");
     html.append("<div class='stamps'></div>");
     return(html);
@@ -37,7 +43,6 @@ ProfileView.prototype = {
     Stamp.create(id,{})
       .then(function(newStamp){
         var newStampView = new StampView(newStamp);
-        console.log(newStampView)
         stampsDiv.append(newStampView.render());
       })
   }

@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var Profile = require("../models/profile")
 var Stamp = require("../models/stamp")
+var User = require("../models/user")
 
 function error(response, message){
   response.status(500);
@@ -26,10 +27,39 @@ var profilesController = {
     });
   },
   addProfile:function(req,res){
+    // Profile.findOne({'username': req.body}, function(err, profile){
+    //   if(err) return err;
+    //   // If the profile already exists, just return that user.
+    //   if(profile){
+    //     return profile;
+    //   } else {
+    //     var newProfile = new Profile(req.body)
+    //     newProfile.save(function(err){
+    //       if(!err){
+    //         return profile;
+    //       }
+    //     })
+    //   }
+    // }).then(function(profile){
+    //   User.findById(req.user._id,function(err,docs){
+    //     docs.follows.push(profile._id);
+    //     docs.save(function(err){
+    //       if(!err){
+    //         res.json(profile)
+    //       }
+    //     })
+    //   })
+    // })
     new Profile(req.body).save().then(function(profile){
-      return profile;
-    }).then(function(profile){
-      res.json(profile);
+      User.findById(req.user._id, function(err,docs){
+        docs.follows.push(profile._id);
+        docs.save(function(err){
+          console.log(profile.username+ " added to the db")
+          if(!err){
+            res.json(profile)
+          }
+        });
+      });
     });
   },
   updateProfile:function(req,res){
@@ -38,7 +68,8 @@ var profilesController = {
     });
   },
   deleteProfile:function(req,res){
-    Profile.findByIdAndRemove(req.params.id).then(function(){
+    Profile.findByIdAndRemove(req.params.id).then(function(profile){
+      console.log("removing "+profile.username+" from the db...")
       res.json({success: true});
     });
   },
