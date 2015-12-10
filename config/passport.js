@@ -1,6 +1,11 @@
 var GitHubStrategy = require('passport-github').Strategy;
 var User            = require('../models/user');
 var env = require('../env.js');
+var Profile = require("../models/profile");
+var Stamp = require("../models/stamp");
+var Functions = require("../db/schemaMethods");
+
+
 
 module.exports = function(passport){
   passport.use(new GitHubStrategy({
@@ -23,22 +28,31 @@ module.exports = function(passport){
           newUser.github.token = token;
           newUser.github.username = profile.username;
           newUser.github.displayName = profile.displayName;
-          
-          newUser.save(function(err){
-            if(err) throw err;
-            return done(null, newUser);
+
+          Profile.findOne({'username': newUser.github.username}, function(err, profile){
+            if(err) return err;
+
+            if (profile){
+              console.log(newUser.github.username + " already in the database")
+              // followProfile(req.user._id,profile,res)
+            }else{
+              var newProfile = new Profile({'username': newUser.github.username}).save(function(err, newProfile){
+                if(!err){
+                  console.log(newUser.github.username + " saved in the database")
+                }
+                newUser.follows.push(newProfile._id)
+                newUser.save(function(err){
+                  if(err) throw err;
+                  return done(null, newUser);
+                })
+              })
+            }
           })
         }
       })
     })
   }));
 
-  // }, function(accessToken, refreshToken, profile, done) {
-  //   process.nextTick(function() {
-  //     console.log(profile)
-  //     return done(null, profile);
-  //   });
-  // }));
   passport.serializeUser(function(user, done) {
     done(null, user);
   });
