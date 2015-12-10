@@ -1,5 +1,6 @@
 var StampView = function(stamp){
   this.stamp = stamp;
+  this.$el = $("<div class='stamp'><button class='randomCommit'>Get Random Commit</button></div>")
 }
 
 StampView.prototype = {
@@ -98,12 +99,9 @@ StampView.prototype = {
       .on("mouseover",repoHover)
       .on("mousemove",repoHover)
       .on("mouseleave",repoUnhover);
-
-    // repos.on("mouseover",repoHover)
-    //   .on("mousemove",repoHover)
-    //   .on("mouseleave",repoUnhover);
   },
   render: function(stampsDiv){
+    var self = this;
     var svg = this.makeStampSvg(stampsDiv);
     var langSummary = this.getLangData();
     var langArray = langSummary.langArray;
@@ -118,6 +116,33 @@ StampView.prototype = {
       .attr('transform','translate(0,60)');
     this.makeLangComposite(langComposite,langArray,langSum);
     this.makeRepoComposite(langRepos,repoLangs,repoMax);
+
+    var randomCommitBtn = this.$el.find('.randomCommit');
+    randomCommitBtn.on("click", function(e){
+      e.preventDefault();
+      self.getRandomCommit();
+    })
+
+  },
+  getRandomCommit:function(){
+    repos = this.stamp.data.commitMessages;
+    var commits = [];
+    for (repo in repos){
+      array = repos[repo];
+      for (var i=0;i<array.length;i++){
+        commits.push(array[i]);
+      }
+    };
+    randomCommit = commits[Math.round(commits.length*Math.random(),0)];
+    alert(randomCommit);
+  },
+  makeButtons:function(stampsDiv){
+    // var contain = $("<div class='inputContainer'></div>");
+    // contain.append('<input class='stats' type="radio" value="seasonal" id="r3"name="optradio2" checked>');
+    // contain.append('<label for="r3">Year-by-Year</label>');
+    // contain.append('<input class='stats' type="radio" value="cumulative" id="r4"name="optradio2">')
+    // contain.append('<label for="r4">Cumulatively</label>')
+    // stampsDiv.append(contain);
   }
 }
 
