@@ -50,29 +50,44 @@ StampView.prototype = {
       .on("mouseleave",langUnhover);
   },
   getRepoLangData:function(){
-    var data = d3.entries(this.stamp.data.languages).map(function(d){return d});
+    var data = d3.entries(this.stamp.data.languages)
+      .map(function(d){
+        var values = d3.entries(d.value).filter(function(a){return a.key!=='meta'})
+        return {
+          key: d.key,
+          meta: d.value.meta,
+          value: values
+        }
+      });
     var repoMax = 0;
     var repoLangs = data
-      .filter(function(d){return Object.keys(d.value).length>1})
+      .filter(function(d){return d.value.length>0})
       .sort(function(a,b){
-        return Date.parse(a.value.meta['last-modified']) - Date.parse(b.value.meta['last-modified'])
+        return Date.parse(a.meta['last-modified']) - Date.parse(b.meta['last-modified'])
       })
     repoLangs.forEach(function(repo){
       var thisSum = 0;
-      for (val in repo.value){
-        if(val!=='meta'){thisSum+=repo.value[val]}
+      console.log(repo)
+      for (var i=0;i<repo.value.length;i++){
+        thisSum+=repo.value[i].value;
       }
       if(thisSum > repoMax){repoMax = thisSum}
     });
+    console.log(repoMax)
     return {repoLangs:repoLangs, repoMax:repoMax};
   },
   makeRepoComposite:function(g,data,repoMax){
     var xScale = this.makeScale(data.length,500);
     var yScale = this.makeScale(repoMax,300);
-    var w = data.length/500;
+    var w = 500/data.length;
     var repos = g.selectAll('.repo').data(data).enter().append('g').attr('class','repo')
       .attr('transform',function(d,i){return 'translate('+xScale(i)+',0)'});
-    // repos.
+    repos.selectAll('rect').data(function(d){return d.value}).enter().append('rect')
+      .attr('height',function(d){
+        return yScale(d.value)
+      })
+      .attr('width',w)
+      .style('fill',function(d){return githubColors[d.key]})
   },
   render: function(stampsDiv){
     var svg = this.makeStampSvg(stampsDiv);
