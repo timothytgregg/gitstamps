@@ -7,6 +7,7 @@ var newProfileView = function(profile){
       if (result.exists){
         self.createProfile(result.username);
       }else{
+        alert("That user doesn't exist")
         self.$el.find("input").val('');
       }
     })
