@@ -1,7 +1,7 @@
 // requiring mongoose dependency
 // var E = require("../env.js")
 var mongoose = require('mongoose')
-// var SchemaMethods = require("./schemaMethods")
+var SchemaMethods = require("./schemaMethods")
 
 // instantiate a name space for our Schema constructor defined by mongoose.
 var Schema = mongoose.Schema,
