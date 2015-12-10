@@ -192,6 +192,7 @@ StampView.prototype = {
     var btnFieldset = $("<fieldset/>");
     btnFieldset.append('<input type="radio" value="bytes" name="chartFields" checked>');
     btnFieldset.append('<label for="input-bytes">Bytes</label>');
+    btnFieldset.append('<br>')
     btnFieldset.append('<input type="radio" value="percent" name="chartFields">')
     btnFieldset.append('<label for="input-percent">Percentage</label>');
     btnForm.append(btnFieldset);
