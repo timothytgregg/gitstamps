@@ -9,3 +9,8 @@
 svg{
   display:block;
 }
+.xaxis path, .xaxis line, .yaxis path, .yaxis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}

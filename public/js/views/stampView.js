@@ -22,8 +22,14 @@ StampView.prototype = {
     langArray.sort(function(b,a){return a.value.total-b.value.total})
     return {langArray:langArray,langSum:langSum};
   },
-  makeScale:function(domainMax,rangeMax){
-    return d3.scale.linear().domain([0,domainMax]).range([0,rangeMax])
+  makeScale:function(domainMax,rangeMax,direction){
+    var scale = d3.scale.linear();
+    if (direction == 'asc'){
+      scale.domain([0,domainMax]).range([0,rangeMax])
+    }else{
+      scale.domain([0,domainMax]).range([rangeMax,0])
+    }
+    return scale//d3.scale.linear().domain([0,domainMax]).range([0,rangeMax])
   },
   makeStampSvg:function(stampsDiv){
     return d3.select(stampsDiv[0]).append('svg').attr('height',400).attr('width',500);
@@ -77,9 +83,15 @@ StampView.prototype = {
     return {repoLangs:repoLangs, repoMax:repoMax};
   },
   makeRepoComposite:function(g,data,repoMax){
-    var xScale = this.makeScale(data.length,500);
-    var yScale = this.makeScale(repoMax,300);
+    var xScale = this.makeScale(data.length,500,'asc');
+    var yScale = this.makeScale(repoMax,300,'asc');
+    var yAxisScale = this.makeScale(repoMax,300,'desc')
     var w = 500/data.length;
+
+    var yAxis = d3.svg.axis().orient('right').scale(yAxisScale);
+    g.append('svg:g').attr('class','yaxis').call(yAxis)
+      .attr('transform','translate(50,0)')
+
     var repos = g.selectAll('.repo').data(data).enter().append('g').attr('class','repo')
       .attr('transform',function(d,i){return 'translate('+xScale(i)+',0)'});
     repos.selectAll('rect').data(function(d){return d.value}).enter().append('rect')
@@ -114,6 +126,7 @@ StampView.prototype = {
     var repoMax = repoSummary.repoMax;
     var langRepos = svg.append('g').attr('class','languageRepos')
       .attr('transform','translate(0,60)');
+    // this.makeChartButtons(stampsDiv);
     this.makeLangComposite(langComposite,langArray,langSum);
     this.makeRepoComposite(langRepos,repoLangs,repoMax);
 
@@ -122,7 +135,6 @@ StampView.prototype = {
       e.preventDefault();
       self.getRandomCommit();
     })
-
   },
   getRandomCommit:function(){
     repos = this.stamp.data.commitMessages;
@@ -136,16 +148,15 @@ StampView.prototype = {
     randomCommit = commits[Math.round(commits.length*Math.random(),0)];
     alert(randomCommit);
   },
-  makeButtons:function(stampsDiv){
-    // var contain = $("<div class='inputContainer'></div>");
-    // contain.append('<input class='stats' type="radio" value="seasonal" id="r3"name="optradio2" checked>');
-    // contain.append('<label for="r3">Year-by-Year</label>');
-    // contain.append('<input class='stats' type="radio" value="cumulative" id="r4"name="optradio2">')
-    // contain.append('<label for="r4">Cumulatively</label>')
-    // stampsDiv.append(contain);
-  }
+  // makeChartButtons:function(stampsDiv){
+  //   var btnContain = $("<div class='inputContainer'></div>");
+  //   btnContain.append('<input type="radio" value="bytes" id="input-bytes" name="chartRadio" checked>');
+  //   btnContain.append('<label for="input-bytes">Bytes</label>');
+  //   btnContain.append('<input type="radio" value="percent" id="input-percent" name="chartRadio">')
+  //   btnContain.append('<label for="input-percent">Percentage</label>');
+  //   stampsDiv.append(btnContain);
+  // }
 }
-
 function langHover(d){
   d3.select('.tooltip')
     .style('top',(d3.event.pageY+10)+"px")
