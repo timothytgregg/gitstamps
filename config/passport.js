@@ -2,6 +2,9 @@ var GitHubStrategy = require('passport-github').Strategy;
 var User            = require('../models/user');
 var env = require('../env.js');
 var Profile = require("../models/profile");
+var Stamp = require("../models/stamp");
+var Functions = require("../db/schemaMethods");
+
 
 module.exports = function(passport){
   passport.use(new GitHubStrategy({
