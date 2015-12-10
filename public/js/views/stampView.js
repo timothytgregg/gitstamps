@@ -53,6 +53,7 @@ StampView.prototype = {
     var data = d3.entries(this.stamp.data.languages)
       .map(function(d){
         var values = d3.entries(d.value).filter(function(a){return a.key!=='meta'})
+          .sort(function(a,b){return a.value - b.value})
         return {
           key: d.key,
           meta: d.value.meta,
@@ -67,13 +68,11 @@ StampView.prototype = {
       })
     repoLangs.forEach(function(repo){
       var thisSum = 0;
-      console.log(repo)
       for (var i=0;i<repo.value.length;i++){
         thisSum+=repo.value[i].value;
       }
       if(thisSum > repoMax){repoMax = thisSum}
     });
-    console.log(repoMax)
     return {repoLangs:repoLangs, repoMax:repoMax};
   },
   makeRepoComposite:function(g,data,repoMax){
@@ -87,7 +86,22 @@ StampView.prototype = {
         return yScale(d.value)
       })
       .attr('width',w)
+      .attr('transform',function(d,i){
+        var vals = d3.select(this.parentNode).datum().value;
+        var offset = 0;
+        for (var b=0;b<i;b++){
+          offset += yScale(vals[b].value);
+        }
+        return 'translate(0,'+(300-offset-yScale(d.value))+')'
+      })
       .style('fill',function(d){return githubColors[d.key]})
+      .on("mouseover",repoHover)
+      .on("mousemove",repoHover)
+      .on("mouseleave",repoUnhover);
+
+    // repos.on("mouseover",repoHover)
+    //   .on("mousemove",repoHover)
+    //   .on("mouseleave",repoUnhover);
   },
   render: function(stampsDiv){
     var svg = this.makeStampSvg(stampsDiv);
@@ -115,5 +129,16 @@ function langHover(d){
     .style('opacity',1)
 }
 function langUnhover(d){
+  d3.select('.tooltip').style('opacity',0)
+}
+function repoHover(d){
+  var repo = d3.select(this.parentNode).datum().key;
+  d3.select('.tooltip')
+    .style('top',(d3.event.pageY+10)+"px")
+    .style('left',(d3.event.pageX+10)+"px")
+    .text(repo+": "+d.key+": "+d.value+" bytes")
+    .style('opacity',1)
+}
+function repoUnhover(d){
   d3.select('.tooltip').style('opacity',0)
 }
