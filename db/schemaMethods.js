@@ -28,6 +28,7 @@ var checkGHUser = function (github, user) {
       per_page:1
     }, function(err,result){
       if (err){
+        resolve({exists: false})
         console.log("User name not valid.")
       }else{
         resolve(result)
