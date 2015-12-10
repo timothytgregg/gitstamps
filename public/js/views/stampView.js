@@ -49,10 +49,30 @@ StampView.prototype = {
       .on("mousemove",langHover)
       .on("mouseleave",langUnhover);
   },
-  makeRepoComposite:function(g){
-    // console.log(this.stamp.data)
-    var data = d3.entries(this.stamp.data.languages).map(function(d){return d})
-    // console.log(data)
+  getRepoLangData:function(){
+    var data = d3.entries(this.stamp.data.languages).map(function(d){return d});
+    var repoMax = 0;
+    var repoLangs = data
+      .filter(function(d){return Object.keys(d.value).length>1})
+      .sort(function(a,b){
+        return Date.parse(a.value.meta['last-modified']) - Date.parse(b.value.meta['last-modified'])
+      })
+    repoLangs.forEach(function(repo){
+      var thisSum = 0;
+      for (val in repo.value){
+        if(val!=='meta'){thisSum+=repo.value[val]}
+      }
+      if(thisSum > repoMax){repoMax = thisSum}
+    });
+    return {repoLangs:repoLangs, repoMax:repoMax};
+  },
+  makeRepoComposite:function(g,data,repoMax){
+    var xScale = this.makeScale(data.length,500);
+    var yScale = this.makeScale(repoMax,300);
+    var w = data.length/500;
+    var repos = g.selectAll('.repo').data(data).enter().append('g').attr('class','repo')
+      .attr('transform',function(d,i){return 'translate('+xScale(i)+',0)'});
+    // repos.
   },
   render: function(stampsDiv){
     var svg = this.makeStampSvg(stampsDiv);
@@ -61,10 +81,14 @@ StampView.prototype = {
     var langSum = langSummary.langSum;
     var langComposite = svg.append('g').attr('class','languageComposite')
       .attr('transform','translate(0,20)');
+
+    var repoSummary = this.getRepoLangData();
+    var repoLangs = repoSummary.repoLangs;
+    var repoMax = repoSummary.repoMax;
     var langRepos = svg.append('g').attr('class','languageRepos')
       .attr('transform','translate(0,60)');
     this.makeLangComposite(langComposite,langArray,langSum);
-    this.makeRepoComposite(langRepos);
+    this.makeRepoComposite(langRepos,repoLangs,repoMax);
   }
 }
 
