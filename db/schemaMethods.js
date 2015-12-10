@@ -27,35 +27,50 @@ var checkGHUser = function (github, user, res) {
     per_page:1
   }, function(err,result){
     if (err){
-      res.json({exists: false})
+      res.json({exists: false});
     }else{
-      res.json({exists:true})
+      res.json({exists:true});
     }
   })
 }
 
+// function doSomething() {
+//     return new Promise(function(resolve) {
+//         var value = 42;
+//         resolve(value);
+//     });
+// }
+//
+// doSomething().then(function(value) {
+//     console.log("got a value", value);
+// });
+
 // this method takes a user name and a GH object (generated from setUp)
 // and retrieves all of a user's repos.   it then calls the next functions
 // in the chain to screen the repos
-var getRepoNamesChain = function (user, github, stamp, profile, resp) {
-  console.log("Getting repo names...")
-  github.repos.getFromUser({
-    user: user, // user we want to search for
-    sort: "updated", // order by most recently updated
-    per_page: 100, // number of repos we want to see (100 max)
-  }, function(err, res) {
-    if (err){
-      console.log("CLOG ERROR @repos: "+err)
-      return err;
-    }
+var getRepoNamesChain = function (user, github) {
+  return new Promise(function(resolve, reject){
+    console.log("Getting repo names...")
     var names = []; // array to store names of repos as strings
-    for (var h=0; h < res.length; h++){
-      //if (res[h].fork == false) {
-        names.push(res[h].name); // construct the array of repo names
-      //}
-    }
-    console.log("Found "+names.length+" repos")
-    checkAuthors(user, github, stamp, profile, names, resp);
+
+    github.repos.getFromUser({
+      user: user, // user we want to search for
+      sort: "updated", // order by most recently updated
+      per_page: 100, // number of repos we want to see (100 max)
+    }, function(err, res) {
+      if (err){
+        console.log("CLOG ERROR @repos: "+err)
+        return err;
+      }
+      for (var h=0; h < res.length; h++){
+        //if (res[h].fork == false) {
+          names.push(res[h].name); // construct the array of repo names
+        //}
+      }
+      console.log("Found "+names.length+" repos")
+      // checkAuthors(user, github, stamp, profile, names, resp);
+      resolve(names);
+    })
   })
 }
 
@@ -64,121 +79,119 @@ var getRepoNamesChain = function (user, github, stamp, profile, resp) {
 // on the repo in question before we search for it.  after this method finishes
 // it will call the next method down in order to start scraping info from the
 // repos
-var checkAuthors = function (user, github, stamp, profile, names, resp) {
-  console.log("Checking authorship of user per repo...")
-  var counter = 0;
-  var originalNumRepos = names.length;
-  for (var i=0; i<names.length; i++) {
-    github.repos.getContributors({
-      user: user, // user we want to search for
-      per_page: 100, // number of repos we want to see (100 max)
-      repo: names[i]
-    }, function(err, res) {
-      if (err){
-        console.log("Error checking contributors: "+err);
-      }
-      if (res) {
-        var use_this_repo = false;
-        for (var j=0; j<res.length; j++){
-          if (res[j].login) {
-            if (res[j].login == user){
-              use_this_repo = true;
+var checkAuthors = function (user, github, names) {
+  return new Promise(function(resolve, reject){
+    console.log("Checking authorship of user per repo...")
+    var counter = 0;
+    var originalNumRepos = names.length;
+    for (var i=0; i<names.length; i++) {
+      github.repos.getContributors({
+        user: user, // user we want to search for
+        per_page: 100, // number of repos we want to see (100 max)
+        repo: names[i]
+      }, function(err, res) {
+        if (err){
+          console.log("Error checking contributors: "+err);
+        }
+        if (res) {
+          var use_this_repo = false;
+          for (var j=0; j<res.length; j++){
+            if (res[j].login) {
+              if (res[j].login == user){
+                use_this_repo = true;
+              }
             }
           }
+          if (!use_this_repo){
+            names.splice(this.j, 1);
+          }
         }
-        if (!use_this_repo){
-          names.splice(this.j, 1);
+        if (counter++ == originalNumRepos-1){
+          console.log("Disregarding "+(originalNumRepos-(names.length))+" repos because "+user+" is not a contributor")
+          // getCommitMessages(user, github, stamp, profile, names, resp);
+          resolve(names);
         }
-      }
-      if (counter++ == originalNumRepos-1){
-        console.log("Disregarding "+(originalNumRepos-(names.length))+" repos because "+user+" is not a contributor")
-        getCommitMessages(user, github, stamp, profile, names, resp);
-      }
-    }.bind({i:i}))
-  }
+      }.bind({i:i}))
+    }
+  })
 }
 
 // this method takes a lsit of GH repos and finds all commit messages only by
 // the specified GH user and then adds them to the stamp object.  it then calls the next
 // function which deals with languages
-var getCommitMessages = function (user, github, stamp, profile, names, resp){
-  console.log("Getting Commit Messages...")
-  var callsDone = 0; // count calls done so we know when all calls have returned from github
-  var nameMsgMap = {}; // object that will store the repo names as keys and the commit messages as values
-  for (var i = 0; i < names.length; i++) { // for each repo name, make a call to github for all commit messages on that repo
-    github.repos.getCommits({
-      user: user,
-      repo: names[i], // the current repo being searched
-      per_page: 100
-    }, function(error, response){
+var getCommitMessages = function (user, github, names){
+  return new Promise(function(resolve, reject){
+    console.log("Getting Commit Messages...")
+    var callsDone = 0; // count calls done so we know when all calls have returned from github
+    var nameMsgMap = {}; // object that will store the repo names as keys and the commit messages as values
+    for (var i = 0; i < names.length; i++) { // for each repo name, make a call to github for all commit messages on that repo
+      github.repos.getCommits({
+        user: user,
+        repo: names[i], // the current repo being searched
+        per_page: 100
+      }, function(error, response){
 
-      if (response) {
-        console.log("Messages from @"+names[this.i]+" retrieved!"+"("+(callsDone+1)+")") // sucess message
-        var msgs = []; // array to hold every message on a given repo
-        // make sure the user in question is the author of the commit
-        for (var a = 0; a < response.length; a++){
-          if (response[a]['committer']) {
-            if (response[a]['committer']['login'] == user) {
-              msgs.push(response[a]['commit']['message']) // add message onto the array
+        if (response) {
+          console.log("Messages from @"+names[this.i]+" retrieved!"+"("+(callsDone+1)+")") // sucess message
+          var msgs = []; // array to hold every message on a given repo
+          // make sure the user in question is the author of the commit
+          for (var a = 0; a < response.length; a++){
+            if (response[a]['committer']) {
+              if (response[a]['committer']['login'] == user) {
+                msgs.push(response[a]['commit']['message']) // add message onto the array
+              }
             }
           }
+          nameMsgMap[names[this.i].replace(/\./g,' ')] = msgs; // construct the object so the key is the repo and the value is the array of commit messages
         }
-        nameMsgMap[names[this.i].replace(/\./g,' ')] = msgs; // construct the object so the key is the repo and the value is the array of commit messages
-      }
-      if (error) {
-        console.log("ERROR in GH CALL @"+names[this.i]+": "+error)
-      }
-      if (++callsDone == names.length){ // check to see if we've done the total number of calls.  if we have, the number of calls will equal the number of repos
-        console.log("Got Commit Messages!"); // success message
-        stamp.data.commitMessages = nameMsgMap // set the commitMessages column on the stamp to be the object we constructed above
-        getLangs(user, github, stamp, profile, names, resp) // now we call the getLangs method, to get all langugages on each repo
-      }
-    }.bind({i:i})) // bind i so we can use it to figure out which repo we're currently searching.  this is needed in order to match repos to commit messages
+        if (error) {
+          console.log("ERROR in GH CALL @"+names[this.i]+": "+error)
+        }
+        if (++callsDone == names.length){ // check to see if we've done the total number of calls.  if we have, the number of calls will equal the number of repos
+          console.log("Got Commit Messages!"); // success message
+          // stamp.data.commitMessages = nameMsgMap // set the commitMessages column on the stamp to be the object we constructed above
+          // getLangs(user, github, stamp, profile, names, resp) // now we call the getLangs method, to get all langugages on each repo
+          var responseObject = {
+                            names: names,
+                            nameMsgMap: nameMsgMap
+                            }
+          resolve(responseObject);
+        }
+      }.bind({i:i})) // bind i so we can use it to figure out which repo we're currently searching.  this is needed in order to match repos to commit messages
 
-  }
+    }
+  })
 }
 // this function is called from inside the above function.  it is never called on its own.  it takes
 // all of its parameters from the above function and loops through the same list of repos for the
 // same user.  instead of getting commit messages, it looks for language data for each repo and constructs
 // an object which is saved in the languages column of our stamp model.  after this process is complete,
 // resp is rendered as json on the screen.
-var getLangs = function(user, github, stamp, profile, names, resp){
-  console.log("Getting Languages...")
-  var calls = 0;
-  var nameLangMap = {};
-  for (var i = 0; i < names.length; i++) {
-    github.repos.getLanguages({
-      user: user, // github user name
-      repo: names[i], // current repo
-      per_page: 100
-    }, function(error, response){
-      if (error) {
-        console.log("ERROR in GH CALL @"+names[this.i]+": "+error)
-      }
-      if (response) {
-        console.log("Languages from @"+names[this.i]+" retrieved!"+"("+(calls+1)+")") // success message
-        nameLangMap[names[this.i].replace(/\./g,' ')] = response; // constructing the object
-      }
-      if (++calls == names.length){ // check to see if all calls have returned
-        console.log("Got Languages!") // success message
-        stamp.data.languages = nameLangMap; // add object to stamp
-        stamp.data.langTotals = parseLangs(nameLangMap); // see this function below
-        stamp.data.langAverages = langAverages(stamp.data.langTotals) // see this function below
-        stamp.data.averageMessageLength = msgAverages(stamp.data.commitMessages) // see this function below
-        stamp.createdAt = Date(); // add time stamp
-        profile.stamps.push(stamp); // push the stamp onto the owner profile's array of stamps
-        resp.json(stamp) // repsond with json
-        profile.save(function(err, profile){ // save the profile
-          if (err){
-            console.log("Error with DB call: "+err)
-          } else {
-            console.log("Saved stamp to DB under "+user+"'s profile.")
-            return;
-          }
-        })
-      }
-    }.bind({i:i})) // bind i from the for loop so we have access to it each callback
-  }
+var getLangs = function(user, github, names){
+  return new Promise(function(resolve, reject){
+    console.log("Getting Languages...")
+    var calls = 0;
+    var nameLangMap = {};
+    for (var i = 0; i < names.length; i++) {
+      github.repos.getLanguages({
+        user: user, // github user name
+        repo: names[i], // current repo
+        per_page: 100
+      }, function(error, response){
+        if (error) {
+          console.log("ERROR in GH CALL @"+names[this.i]+": "+error)
+        }
+        if (response) {
+          console.log("Languages from @"+names[this.i]+" retrieved!"+"("+(calls+1)+")") // success message
+          nameLangMap[names[this.i].replace(/\./g,' ')] = response; // constructing the object
+        }
+        if (++calls == names.length){ // check to see if all calls have returned
+          console.log("Got Languages!") // success message
+          resolve(nameLangMap)
+        }
+      }.bind({i:i})) // bind i from the for loop so we have access to it each callback
+    }
+  })
 }
 // this method should only be called after getLangs.  it parses through
 // the languages object in a stamp and finds the total number of languages
@@ -235,5 +248,10 @@ module.exports = {
   getRepoNamesChain: getRepoNamesChain,
   getCommitMessages: getCommitMessages,
   checkGHUser: checkGHUser,
-  // getLangs: getLangs
+  checkAuthors: checkAuthors,
+  getCommitMessages: getCommitMessages,
+  getLangs: getLangs,
+  langAverages: langAverages,
+  parseLangs: parseLangs,
+  msgAverages: msgAverages
 }

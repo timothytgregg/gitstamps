@@ -93,17 +93,33 @@ var profilesController = {
   },
   addStamp:function(req,res){
     var token = req.user.github.token;
-    Profile.findById(req.params.id,function(err,docs){
+    Profile.findById(req.params.id,function(err, profile){
       var stamp = new Stamp(req.body);
       var git = Functions.setUp(token);
-      Functions.getRepoNamesChain(docs.username, git, stamp, docs, res);
-      // res.json(stamp);
-      // docs.stamps.pu sh(stamp);
-      // docs.save(function(err){
-      //   if(!err){
-      //     res.json(stamp);
-      //   }
-      // });
+      Functions.getRepoNamesChain(profile.username, git).then(function(repoNames){
+        Functions.checkAuthors(profile.username, git, repoNames).then(function(refinedNames){
+          Functions.getCommitMessages(profile.username, git, refinedNames).then(function(responseObject){
+            stamp.data.commitMessages = responseObject.nameMsgMap;
+            Functions.getLangs(profile.username, git, responseObject.names).then(function(nameLangMap){
+              stamp.data.languages = nameLangMap; // add object to stamp
+              stamp.data.langTotals = Functions.parseLangs(nameLangMap); // see this function below
+              stamp.data.langAverages = Functions.langAverages(stamp.data.langTotals) // see this function below
+              stamp.data.averageMessageLength = Functions.msgAverages(stamp.data.commitMessages) // see this function below
+              stamp.createdAt = Date(); // add time stamp
+              profile.stamps.push(stamp); // push the stamp onto the owner profile's array of stamps
+              res.json(stamp) // repsond with json
+              profile.save(function(err, docs){ // save the profile
+                if (err){
+                  console.log("Failed to save stamp: "+err)
+                } else {
+                  console.log("Saved stamp to DB under "+profile.username+"'s profile.")
+                  return;
+                }
+              })
+            })
+          })
+        })
+      })
     });
   }
 }
