@@ -29,3 +29,7 @@ svg{
 .randomCommit{
   margin: 1em;
 }
+
+.commitBox{
+  width:50%
+}

@@ -1,6 +1,6 @@
 var StampView = function(stamp){
   this.stamp = stamp;
-  this.$el = $("<div class='stamp'><button class='randomCommit'>Get Random Commit</button></div>")
+  this.$el = $("<div class='stamp'><form><input class='commitBox' type='textbox' placeholder='Random Commit Message'></input><button class='randomCommit'>Get Random Commit!</button></form></div>")
 }
 
 StampView.prototype = {
@@ -123,6 +123,7 @@ StampView.prototype = {
       self.getRandomCommit();
     })
 
+
   },
   getRandomCommit:function(){
     repos = this.stamp.data.commitMessages;
@@ -134,7 +135,7 @@ StampView.prototype = {
       }
     };
     randomCommit = commits[Math.round(commits.length*Math.random(),0)];
-    alert(randomCommit);
+    $('.commitBox').val(randomCommit);
   },
   makeButtons:function(stampsDiv){
     // var contain = $("<div class='inputContainer'></div>");
