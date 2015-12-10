@@ -209,11 +209,13 @@ function langUnhover(d){
   d3.select('.tooltip').style('opacity',0)
 }
 function repoHover(d){
-  var repo = d3.select(this.parentNode).datum().key;
+  var parentNode = d3.select(this.parentNode).datum();
+  var repo = parentNode.key;
+  var sum = d3.sum(parentNode.value, function(d) { return d.value; });
   d3.select('.tooltip')
     .style('top',(d3.event.pageY+10)+"px")
     .style('left',(d3.event.pageX+10)+"px")
-    .text(repo+": "+d.key+": "+d.value+" bytes")
+    .text(repo+": "+d.key+": "+d.value+" bytes, "+d3.round((d.value/sum*100),2)+"%")
     .style('opacity',1)
 }
 function repoUnhover(d){
