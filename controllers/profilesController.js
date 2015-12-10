@@ -52,8 +52,8 @@ var profilesController = {
   checkProfile:function(req,res){
     var token = req.user.github.token;
     var git = Functions.setUp(token);
-    Functions.checkGHUser(git,req.query.username).then(function(resp){
-      if (resp){
+    Functions.checkGHUser(git,req.query.username).then(function(resp, reject){
+      if (!resp){
         res.json({exists: true});
       }
     })
