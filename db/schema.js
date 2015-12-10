@@ -13,7 +13,7 @@ var StampSchema = new Schema({
   data: {
     languages: Object,
     commitMessages: Object,
-    avgMsg: Number,
+    averageMessageLength: Number,
     langTotals: Object,
     langAverages: Object
   }
@@ -28,6 +28,7 @@ var StampSchema = new Schema({
 
 // defining schema for profiles.
 var ProfileSchema = new Schema({
+  createdAt: Date,
   username: String,
   stamps: [StampSchema]
 })

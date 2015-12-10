@@ -1,4 +1,5 @@
 var Profile = function(info){
+  this.createdAt = info.createdAt;
   this.username = info.username;
   this.id = info._id;
   this.stamps = info.stamps;

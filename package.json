@@ -28,6 +28,7 @@
     "mongoose": "^4.2.9",
     "passport": "^0.3.2",
     "passport-github": "^1.0.0",
-    "promise": "^7.0.4"
+    "promise": "^7.0.4",
+    "q": "^1.4.1"
   }
 }

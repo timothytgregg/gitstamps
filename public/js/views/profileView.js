@@ -3,7 +3,6 @@ var ProfileView = function(profile){
   this.profile = profile;
   this.$el = $("<div class='profile'>");
   this.render();
-
   $(".profiles").append(this.$el);
 };
 
@@ -14,6 +13,10 @@ ProfileView.prototype = {
 
     var stampsDiv = self.$el.find(".stamps");
     self.appendStamps(self.profile.stamps,stampsDiv);
+    
+    if(stampsDiv.children().length === 0){
+      self.makeNewStamp(self.profile.id, stampsDiv)
+    }
 
     var newStamp = self.$el.find(".stamp");
     newStamp.on("click",function(){
@@ -22,7 +25,11 @@ ProfileView.prototype = {
 
     var unfollow = self.$el.find(".unfollow");
     unfollow.on("click", function(){
-      self.profile.unfollow().then(function(){self.$el.fadeOut()})
+      self.profile.unfollow().then(function(){
+        self.$el.fadeOut(500,"linear",function(){
+          self.$el.remove()
+        })
+      })
     });
   },
   profileTemplate:function(profile){
@@ -36,14 +43,16 @@ ProfileView.prototype = {
   appendStamps:function(stamps,stampsDiv){
     stamps.forEach(function(stamp){
       var stampView = new StampView(stamp);
-      stampsDiv.append(stampView.render());
+      stampView.render(stampView.$el)
+      stampsDiv.append(stampView.$el)
     });
   },
   makeNewStamp:function(id,stampsDiv){
     Stamp.create(id,{})
       .then(function(newStamp){
         var newStampView = new StampView(newStamp);
-        stampsDiv.append(newStampView.render());
+        newStampView.render(newStampView.$el);
+        stampsDiv.append(newStampView.$el);
       })
   }
 };
