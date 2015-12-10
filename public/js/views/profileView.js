@@ -39,14 +39,16 @@ ProfileView.prototype = {
   appendStamps:function(stamps,stampsDiv){
     stamps.forEach(function(stamp){
       var stampView = new StampView(stamp);
-      stampView.render(stampsDiv);
+      stampView.render(stampView.$el)
+      stampsDiv.append(stampView.$el)
     });
   },
   makeNewStamp:function(id,stampsDiv){
     Stamp.create(id,{})
       .then(function(newStamp){
         var newStampView = new StampView(newStamp);
-        newStampView.render(stampsDiv)
+        newStampView.render(newStampView.$el);
+        stampsDiv.append(newStampView.$el);
       })
   }
 };

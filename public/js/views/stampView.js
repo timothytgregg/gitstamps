@@ -1,5 +1,6 @@
 var StampView = function(stamp){
   this.stamp = stamp;
+  this.$el = $("<div class='stamp'></div>")
 }
 
 StampView.prototype = {
@@ -98,10 +99,6 @@ StampView.prototype = {
       .on("mouseover",repoHover)
       .on("mousemove",repoHover)
       .on("mouseleave",repoUnhover);
-
-    // repos.on("mouseover",repoHover)
-    //   .on("mousemove",repoHover)
-    //   .on("mouseleave",repoUnhover);
   },
   render: function(stampsDiv){
     var svg = this.makeStampSvg(stampsDiv);
