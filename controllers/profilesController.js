@@ -49,17 +49,24 @@ var profilesController = {
       res.json(profile);
     });
   },
+  checkProfile:function(req,res){
+    var token = req.user.github.token;
+    var git = Functions.setUp(token);
+    Functions.checkGHUser(git,req.query.username,res)
+  },
   addProfile:function(req,res){
     Profile.findOne({'username':req.body.username}, function(err, profile){
       if(err) return err;
-      // If the profile doesn't exist, make it and follow it
-      // If the profile exists and the user doesn't follow it, follow it
-      // If the profile exists and the user follows it, do nothing
+
       if (profile){
         console.log(req.body.username + " already in the database")
         followProfile(req.user._id,profile,res)
       }else{
-        var newProfile = new Profile(req.body).save(function(err){
+        var profileObject = {
+          createdAt: Date(),
+          username: req.body.username
+        }
+        var newProfile = new Profile(profileObject).save(function(err){
           if(!err){
             console.log(req.body.username + " saved in the database")
             return newProfile

@@ -1,13 +1,32 @@
+// relics
+
+// none of these functions are used.  but I didn't want to throw them away so they're here.
+var E = require("./env.js")
+
 var mongoose = require("mongoose")
 mongoose.connect('mongodb://localhost/chase-express')
-var functs = require("./db/schemaMethods.js")
 var Stamp = require("./models/stamp.js")
 var E = require("./env.js")
 
-var testModel = new Stamp({})
-var git = testModel.setUp(E.ghKey)
-testModel.getCommitMessagesR('solowt', git);
 
+var setUp = function(token) {
+  var GitHubApi = require("github");
+  var github = new GitHubApi({
+      version: "3.0.0",
+      protocol: "https",
+      host: "api.github.com",
+      pathPrefix: "",
+      timeout: 5000,
+      headers: {
+      }
+  });
+  github.authenticate({
+      type: "token",
+      token: token
+  });
+  console.log("Logged in to Github!")
+  return github;
+}
 
 var getLangs = function(user, github) {
   var self = this;
@@ -151,7 +170,7 @@ var getMsgR = function (iter, names, github, user, nameMsgMap, stamp) {
       per_page: 100
     }, function(err, res) {
       if (err){
-        console.log("error "+err)
+        console.log("Error...retrying: "+err)
         getMsgR(iter, names, github, user, nameMsgMap, stamp)
       } else {
         var msgs = [];
@@ -163,7 +182,7 @@ var getMsgR = function (iter, names, github, user, nameMsgMap, stamp) {
       }
     })
   } else {
-    stamp.data.commitMessages = nameMsgMap;
+    console.log("Done!")
   }
 }
 
@@ -270,3 +289,11 @@ var getLangs = function(user, github) {
     }
   })
 }
+var testModel = new Stamp({})
+var git = setUp(E.ghKey)
+getCommitMessagesR('solowt', git);
+
+// module.exports = {
+//   getCommitMessagesR: getCommitMessagesR,
+//   getMsgR: getMsgR
+// }
