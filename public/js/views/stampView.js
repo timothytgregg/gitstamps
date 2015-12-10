@@ -67,7 +67,7 @@ StampView.prototype = {
       })
     repoLangs.forEach(function(repo){
       var thisSum = 0;
-      console.log(repo)
+      // console.log(repo)
       for (var i=0;i<repo.value.length;i++){
         thisSum+=repo.value[i].value;
       }
