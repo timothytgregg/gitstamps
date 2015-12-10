@@ -6,6 +6,7 @@ var Stamp = require("../models/stamp");
 var Functions = require("../db/schemaMethods");
 
 
+
 module.exports = function(passport){
   passport.use(new GitHubStrategy({
     clientID: env.clientID,
@@ -27,29 +28,25 @@ module.exports = function(passport){
           newUser.github.token = token;
           newUser.github.username = profile.username;
           newUser.github.displayName = profile.displayName;
-          newUser.save(function(err){
-            if(err) throw err;
-            return done(null, newUser);
+          Profile.findOne({'username': newUser.github.username}, function(err, profile){
+            if(err) return err;
+
+            if (profile){
+              console.log(newUser.github.username + " already in the database")
+              // followProfile(req.user._id,profile,res)
+            }else{
+              var newProfile = new Profile({'username': newUser.github.username}).save(function(err, newProfile){
+                if(!err){
+                  console.log(newUser.github.username + " saved in the database")
+                }
+                newUser.follows.push(newProfile._id)
+                newUser.save(function(err){
+                  if(err) throw err;
+                  return done(null, newUser);
+                })
+              })
+            }
           })
-          // Profile.findOne({'username': newUser.github.username}, function(err, profile){
-          //   if(err) return err;
-          //
-          //   if (profile){
-          //     console.log(newUser.github.username + " already in the database")
-          //     // followProfile(req.user._id,profile,res)
-          //   }else{
-          //     var newProfile = new Profile({'username': newUser.github.username}).save(function(err, newProfile){
-          //       if(!err){
-          //         console.log(newUser.github.username + " saved in the database")
-          //       }
-          //       newUser.follows.push(newProfile._id)
-          //       newUser.save(function(err){
-          //         if(err) throw err;
-          //         return done(null, newUser);
-          //       })
-          //     })
-          //   }
-          // })
         }
       })
     })

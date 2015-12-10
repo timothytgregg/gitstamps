@@ -4,29 +4,13 @@ var Profile = function(info){
   this.stamps = info.stamps;
 };
 
-Profile.fetch = function(currentUser){
+Profile.fetch = function(){
   var request = $.getJSON("http://localhost:3000/profiles.json")
   .then(function(response) {
-    console.log(response)
-    if(response.length === 0){
-      var url = "http://localhost:3000/profiles.json";
-      var url = "http://localhost:3000/profiles.json";
-      var request = $.ajax({
-        url: url,
-        method: "post",
-        data: JSON.stringify({username: "currentUser"}),
-        contentType : 'application/json'
-      }).then(function(profileData){
-        var newP = new Profile(profileData);
-        return newP
-      })
-
-    }
     var profiles = [];
     for(var i = 0; i < response.length; i++){
       profiles.push(new Profile(response[i]));
     }
-    console.log(profiles)
     return profiles;
     })
   .fail(function(response){
