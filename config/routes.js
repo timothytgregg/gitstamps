@@ -19,6 +19,9 @@ router.route('/')
     res.redirect('/profiles')//only humans, never go to .json
   })
 
+router.route('/profiles/check')
+  .get(profilesController.checkProfile)
+
 router.route('/profiles/:id')
   .get(profilesController.getProfile)
   .patch(profilesController.updateProfile)
