@@ -47,7 +47,7 @@ var getRepoNamesChain = function (user, github) {
     github.repos.getFromUser({
       user: user, // user we want to search for
       sort: "updated", // order by most recently updated
-      per_page: 100, // number of repos we want to see (100 max)  
+      per_page: 100, // number of repos we want to see (100 max)
     }, function(err, res) {
       if (err){
         console.log("CLOG ERROR @repos: "+err)

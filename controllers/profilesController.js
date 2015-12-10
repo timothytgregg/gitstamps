@@ -97,33 +97,37 @@ var profilesController = {
       res.json(profile.stamps);
     });
   },
-  addStamp:function(req,res){
+  addStamp: function(req, res) {
     var token = req.user.github.token; // get the currently logged in user's oauth token to make github api calls with
-    Profile.findById(req.params.id,function(err, profile){
+    Profile.findById(req.params.id, function(err, profile) {
       var stamp = new Stamp(req.body); // create a new blank stamp
       var git = Functions.setUp(token); // log in to github's api using the oauth token
-      Functions.getRepoNamesChain(profile.username, git).then(function(repoNames){ // get all repo names then...
-        Functions.checkAuthors(profile.username, git, repoNames).then(function(refinedNames){ // make sure our user is a contributor on each repo then...
-          Functions.getCommitMessages(profile.username, git, refinedNames).then(function(responseObject){ // find all commit messages on the remaining repos then...
-            stamp.data.commitMessages = responseObject.nameMsgMap; // store the messages on our stamp
-            Functions.getLangs(profile.username, git, responseObject.names).then(function(nameLangMap){ // get all language data then...
-              stamp.data.languages = nameLangMap; // add raw languuage data to stamp
-              stamp.data.langTotals = Functions.parseLangs(nameLangMap); // compile the raw language data into total language per user stat
-              stamp.data.langAverages = Functions.langAverages(stamp.data.langTotals) // percentage of each language per user
-              stamp.data.averageMessageLength = Functions.msgAverages(stamp.data.commitMessages) // calculate average commit message length
-              stamp.createdAt = Date(); // add time stamp
-              profile.stamps.push(stamp); // push the stamp onto the owner profile's array of stamps
-              profile.save(function(err, docs){ // save the profile
-                if (err){
-                  console.log("Failed to save stamp: "+err)
-                } else {
-                  console.log("Saved stamp to DB under "+profile.username+"'s profile.")
-                  res.json(stamp) // repsond with json
-                  return;
-                }
+        Functions.getRepoNamesChain(profile.username, git).then(function(repoNames) { // get all repo names then...
+          Functions.checkAuthors(profile.username, git, repoNames).then(function(refinedNames) { // make sure our user is a contributor on each repo then...
+            if (refinedNames.length > 0) {
+              Functions.getCommitMessages(profile.username, git, refinedNames).then(function(responseObject) { // find all commit messages on the remaining repos then...
+                stamp.data.commitMessages = responseObject.nameMsgMap; // store the messages on our stamp
+                Functions.getLangs(profile.username, git, responseObject.names).then(function(nameLangMap) { // get all language data then...
+                  stamp.data.languages = nameLangMap; // add raw languuage data to stamp
+                  stamp.data.langTotals = Functions.parseLangs(nameLangMap); // compile the raw language data into total language per user stat
+                  stamp.data.langAverages = Functions.langAverages(stamp.data.langTotals) // percentage of each language per user
+                  stamp.data.averageMessageLength = Functions.msgAverages(stamp.data.commitMessages) // calculate average commit message length
+                  stamp.createdAt = Date(); // add time stamp
+                  profile.stamps.push(stamp); // push the stamp onto the owner profile's array of stamps
+                  profile.save(function(err, docs) { // save the profile
+                  if (err) {
+                    console.log("Failed to save stamp: " + err)
+                  } else {
+                    console.log("Saved stamp to DB under " + profile.username + "'s profile.")
+                    res.json(stamp) // repsond with json
+                    return;
+                  }
+                })
               })
             })
-          })
+          } else {
+            console.log("User has contributed to no repos. Nothing to search.")
+          }
         })
       })
     });
