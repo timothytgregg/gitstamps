@@ -29,13 +29,14 @@ StampView.prototype = {
     }else{
       scale.domain([0,domainMax]).range([rangeMax,0])
     }
-    return scale//d3.scale.linear().domain([0,domainMax]).range([0,rangeMax])
+    return scale;
   },
   makeStampSvg:function(stampsDiv){
     return d3.select(stampsDiv[0]).append('svg').attr('height',400).attr('width',500);
   },
-  makeLangComposite:function(g,langArray,langSum){
-    var xScale = this.makeScale(langSum,500);
+  makeLangComposite:function(svg,langArray,langSum){
+    var xScale = this.makeScale(langSum,500,'asc');
+    var g = svg.append('g').attr('transform','translate(0,20)')
     g.selectAll('rect').data(langArray).enter().append('rect')
       .attr('transform',function(d,i){
         var offset = 0;
@@ -82,17 +83,17 @@ StampView.prototype = {
     });
     return {repoLangs:repoLangs, repoMax:repoMax};
   },
-  makeRepoComposite:function(g,data,repoMax){
+  makeRepoComposite:function(svg,data,repoMax){
     var xScale = this.makeScale(data.length,500,'asc');
     var yScale = this.makeScale(repoMax,300,'asc');
     var yAxisScale = this.makeScale(repoMax,300,'desc')
     var w = 500/data.length;
 
     var yAxis = d3.svg.axis().orient('right').scale(yAxisScale);
-    g.append('svg:g').attr('class','yaxis').call(yAxis)
+    svg.append('svg:g').attr('class','yaxis').call(yAxis)
       .attr('transform','translate(50,0)')
 
-    var repos = g.selectAll('.repo').data(data).enter().append('g').attr('class','repo')
+    var repos = svg.selectAll('.repo').data(data).enter().append('g').attr('class','repo')
       .attr('transform',function(d,i){return 'translate('+xScale(i)+',0)'});
     repos.selectAll('rect').data(function(d){return d.value}).enter().append('rect')
       .attr('height',function(d){
@@ -114,21 +115,23 @@ StampView.prototype = {
   },
   render: function(stampsDiv){
     var self = this;
-    var svg = this.makeStampSvg(stampsDiv);
+
     var langSummary = this.getLangData();
     var langArray = langSummary.langArray;
     var langSum = langSummary.langSum;
-    var langComposite = svg.append('g').attr('class','languageComposite')
-      .attr('transform','translate(0,20)');
+    var langSvg = d3.select(stampsDiv[0]).append('svg').attr('class','languageComposite')
+      .attr('height',60).attr('width',500);
 
     var repoSummary = this.getRepoLangData();
     var repoLangs = repoSummary.repoLangs;
     var repoMax = repoSummary.repoMax;
-    var langRepos = svg.append('g').attr('class','languageRepos')
-      .attr('transform','translate(0,60)');
+    var repoSvg = d3.select(stampsDiv[0]).append('svg').attr('class','languageRepos')
+      .attr('height',400).attr('width',500);
+
+    this.makeLangComposite(langSvg,langArray,langSum);
+    this.makeRepoComposite(repoSvg,repoLangs,repoMax);
+
     // this.makeChartButtons(stampsDiv);
-    this.makeLangComposite(langComposite,langArray,langSum);
-    this.makeRepoComposite(langRepos,repoLangs,repoMax);
 
     var randomCommitBtn = this.$el.find('.randomCommit');
     randomCommitBtn.on("click", function(e){
