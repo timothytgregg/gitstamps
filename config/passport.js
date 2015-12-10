@@ -28,7 +28,6 @@ module.exports = function(passport){
           newUser.github.token = token;
           newUser.github.username = profile.username;
           newUser.github.displayName = profile.displayName;
-
           Profile.findOne({'username': newUser.github.username}, function(err, profile){
             if(err) return err;
 

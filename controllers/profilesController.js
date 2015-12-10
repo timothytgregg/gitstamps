@@ -88,6 +88,7 @@ var profilesController = {
     });
   },
   addStamp:function(req,res){
+    console.log(req.body)
     var token = req.user.github.token;
     Profile.findById(req.params.id,function(err,docs){
       var stamp = new Stamp(req.body);
