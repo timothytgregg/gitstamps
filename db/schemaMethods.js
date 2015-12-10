@@ -73,8 +73,10 @@ var getRepoNamesChain = function (user, github) {
 var checkAuthors = function (user, github, names) {
   return new Promise(function(resolve, reject){
     console.log("Checking authorship of user per repo...")
+    // console.log(names)
     var counter = 0;
     var originalNumRepos = names.length;
+    var removeCount = [];
     for (var i=0; i<names.length; i++) {
       github.repos.getContributors({
         user: user, // user we want to search for
@@ -94,12 +96,14 @@ var checkAuthors = function (user, github, names) {
             }
           }
           if (!use_this_repo){
-            names.splice(this.j, 1);
+            removeCount.push(names[this.i]);
           }
         }
         if (counter++ == originalNumRepos-1){
+          for (var k=0; k<removeCount.length; k++){
+            names.splice(names.indexOf(removeCount[k]), 1)
+          }
           console.log("Disregarding "+(originalNumRepos-(names.length))+" repos because "+user+" is not a contributor")
-          // getCommitMessages(user, github, stamp, profile, names, resp);
           resolve(names);
         }
       }.bind({i:i}))
