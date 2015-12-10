@@ -26,7 +26,7 @@ newProfileView.prototype = {
   checkProfile:function(){
     var self = this;
     var username = self.$el.find('input[name=username]').val();
-    url = "http://localhost:3000/profiles/check?username="+username;
+    url = "https://gitstamps.herokuapp.com/profiles/check?username="+username;
     return $.getJSON(url);
   }
 };
