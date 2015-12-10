@@ -19,6 +19,11 @@ ProfileView.prototype = {
       self.makeNewStamp(self.profile.id,stampsDiv);
     });
 
+    var randomCommit = self.$el.find(".randomCommit");
+    randomCommit.on("click", function(){
+      self.getRandomCommit(self.profile.id)
+    })
+
     var unfollow = self.$el.find(".unfollow");
     unfollow.on("click", function(){
       self.profile.unfollow().then(function(){
@@ -33,6 +38,7 @@ ProfileView.prototype = {
     html.append("<h3>" + profile.username + "</h3>");
     html.append("<button class='unfollow'>Unfollow</button>")
     html.append("<button class='stamp'>Add Stamp</button>");
+    html.append("<button class='randomCommit'>Get Random Commit!</button>");
     html.append("<div class='stamps'></div>");
     return(html);
   },
@@ -48,5 +54,16 @@ ProfileView.prototype = {
         var newStampView = new StampView(newStamp);
         newStampView.render(stampsDiv)
       })
+  },
+  getRandomCommit:function(id){
+    console.log(id);
+    $.getJSON("http://localhost:3000/profiles").then(function(data){
+      console.log(data);
+    })
+    //takes in profile ID
+    //finds all commit messages,
+    //grabs one random commit message,
+    //displays to page
+    //  appends div
   }
 };
