@@ -92,7 +92,7 @@ StampView.prototype = {
     var yAxis = d3.svg.axis().orient('left').scale(yAxisScale)
       .tickFormat(d3.format('s'));
     svg.append('svg:g').attr('class','yaxis').call(yAxis)
-      .attr('transform','translate(40,50)')
+      .attr('transform','translate(45,50)')
 
     var repos = svg.selectAll('.repo').data(data).enter().append('g').attr('class','repo')
       .attr('transform',function(d,i){return 'translate('+(xScale(i)+50)+',0)'});
@@ -131,14 +131,49 @@ StampView.prototype = {
 
     this.makeLangComposite(langSvg,langArray,langSum);
     this.makeRepoComposite(repoSvg,repoLangs,repoMax);
-
-    // this.makeChartButtons(stampsDiv);
+    this.makeChartButtons(stampsDiv);
 
     var randomCommitBtn = this.$el.find('.randomCommit');
     randomCommitBtn.on("click", function(e){
       e.preventDefault();
       self.getRandomCommit();
-    })
+    });
+
+    var chartInputs = this.$el.find('input[name=chartFields]');
+    chartInputs.on("change", function(e){
+      e.preventDefault();
+      self.transitionRepoComposite(this.value, repoSvg,repoMax);
+    });
+  },
+  transitionRepoComposite:function(field, svg, repoMax){
+    var max = (field=='percent')?1:repoMax;
+    var yScale = this.makeScale(max,300,'asc');
+    var yAxisScale = this.makeScale(max,300,'desc');
+    var tickFormat = (field=='percent')?'p':'s';
+    var yAxis = d3.svg.axis().orient('left').scale(yAxisScale)
+      .tickFormat(d3.format(tickFormat));
+    svg.select('.yaxis').transition().duration(500).call(yAxis);
+    var repos = svg.selectAll('.repo');
+    repos.selectAll('rect').transition().duration(500)
+      .style('height',function(d){
+        var vals = d3.select(this.parentNode).datum().value;
+        var sum = d3.sum(vals, function(d) { return d.value; });
+        var val = (field=='percent')?d.value/sum:d.value;
+        var h = (field=='percent')?yScale(d.value/sum):yScale(d.value);
+        return h;
+      })
+      .attr('transform',function(d,i){
+        var vals = d3.select(this.parentNode).datum().value;
+        var sum = d3.sum(vals, function(d) { return d.value; });
+        var offset = (-50);
+        for (var b=0;b<i;b++){
+          var off = (field=='percent')?yScale(vals[b].value/sum):yScale(vals[b].value);
+          offset += off;
+        }
+        var h = (field=='percent')?yScale(d.value/sum):yScale(d.value);
+        return 'translate(0,'+(300-offset-h)+')'
+      })
+
   },
   getRandomCommit:function(){
     repos = this.stamp.data.commitMessages;
@@ -152,14 +187,16 @@ StampView.prototype = {
     randomCommit = commits[Math.round(commits.length*Math.random(),0)];
     alert(randomCommit);
   },
-  // makeChartButtons:function(stampsDiv){
-  //   var btnContain = $("<div class='inputContainer'></div>");
-  //   btnContain.append('<input type="radio" value="bytes" id="input-bytes" name="chartRadio" checked>');
-  //   btnContain.append('<label for="input-bytes">Bytes</label>');
-  //   btnContain.append('<input type="radio" value="percent" id="input-percent" name="chartRadio">')
-  //   btnContain.append('<label for="input-percent">Percentage</label>');
-  //   stampsDiv.append(btnContain);
-  // }
+  makeChartButtons:function(stampsDiv){
+    var btnForm = $("<form/>");
+    var btnFieldset = $("<fieldset/>");
+    btnFieldset.append('<input type="radio" value="bytes" name="chartFields" checked>');
+    btnFieldset.append('<label for="input-bytes">Bytes</label>');
+    btnFieldset.append('<input type="radio" value="percent" name="chartFields">')
+    btnFieldset.append('<label for="input-percent">Percentage</label>');
+    btnForm.append(btnFieldset);
+    stampsDiv.append(btnForm);
+  }
 }
 function langHover(d){
   d3.select('.tooltip')
