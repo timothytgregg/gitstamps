@@ -14,7 +14,7 @@ ProfileView.prototype = {
     var stampsDiv = self.$el.find(".stamps");
     self.appendStamps(self.profile.stamps,stampsDiv);
 
-    var newStamp = self.$el.find(".stamp");
+    var newStamp = self.$el.find(".addStamp");
     newStamp.on("click",function(){
       self.makeNewStamp(self.profile.id,stampsDiv);
     });
@@ -38,21 +38,22 @@ ProfileView.prototype = {
     html.append("<h3>" + profile.username + "</h3>");
     html.append("<button class='unfollow'>Unfollow</button>")
     html.append("<button class='addStamp'>Add Stamp</button>");
-    html.append("<button class='randomCommit'>Get Random Commit!</button>");
     html.append("<div class='stamps'></div>");
     return(html);
   },
   appendStamps:function(stamps,stampsDiv){
     stamps.forEach(function(stamp){
       var stampView = new StampView(stamp);
-      stampView.render(stampsDiv);
+      stampView.render(stampView.$el)
+      stampsDiv.append(stampView.$el)
     });
   },
   makeNewStamp:function(id,stampsDiv){
     Stamp.create(id,{})
       .then(function(newStamp){
         var newStampView = new StampView(newStamp);
-        newStampView.render(stampsDiv)
+        newStampView.render(newStampView.$el);
+        stampsDiv.append(newStampView.$el);
       })
   },
   getRandomCommit:function(id){

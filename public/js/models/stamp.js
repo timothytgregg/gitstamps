@@ -1,7 +1,6 @@
 var Stamp = function(info){
   this.createdAt = info.createdAt;
   this.data = info.data;
-  // this.language = info.data.language;
   this.id = info._id;
 }
 

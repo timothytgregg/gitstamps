@@ -14,7 +14,7 @@ describe ("the profile model", function(){
   it("should have a username", function(){
     expect(testProfile.username).toEqual(jasmine.any(String));
   });
-  it("should have a created at date", function(){
+  it("should have a created-at date", function(){
     expect(testProfile.createdAt).toEqual(jasmine.any(Date));
   });
   it("should have an empty array of stamps", function(){
