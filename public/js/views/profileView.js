@@ -18,7 +18,7 @@ ProfileView.prototype = {
       self.makeNewStamp(self.profile.id, stampsDiv)
     }
 
-    var newStamp = self.$el.find(".stamp");
+    var newStamp = self.$el.find(".addStamp");
     newStamp.on("click",function(){
       self.makeNewStamp(self.profile.id,stampsDiv);
     });
@@ -36,7 +36,7 @@ ProfileView.prototype = {
     var html = $("<div/>")
     html.append("<h3>" + profile.username + "</h3>");
     html.append("<button class='unfollow'>Unfollow</button>")
-    html.append("<button class='stamp'>Add Stamp</button>");
+    html.append("<button class='addStamp'>Add Stamp</button>");
     html.append("<div class='stamps'></div>");
     return(html);
   },
