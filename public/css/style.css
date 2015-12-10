@@ -33,3 +33,15 @@ svg{
 .commitBox{
   width:50%
 }
+rect{
+  stroke:white;
+  stroke-width:0.5px;
+}
+.xaxis path, .xaxis line, .yaxis path, .yaxis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+label{
+  margin-left:5px;
+}

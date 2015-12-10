@@ -34,7 +34,6 @@ app.use(function (req, res, next) {
 });
 
 //working middleware for routes starting with /profile
-//COMMENT THIS BACK IN WHEN DONE USING POSTMAN
 app.all('/profiles*', checkUser);
 function checkUser(req, res, next) {
   if (req.isAuthenticated()) return next();
