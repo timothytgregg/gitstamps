@@ -117,8 +117,8 @@ StampView.prototype = {
     this.makeLangComposite(langComposite,langArray,langSum);
     this.makeRepoComposite(langRepos,repoLangs,repoMax);
 
-    var randomCommitBtn = this.$el.find('.randomCommit');
-    randomCommitBtn.on("click", function(e){
+    var randomCommitButton = this.$el.find('.randomCommit');
+    randomCommitButton.on("click", function(e){
       e.preventDefault();
       self.getRandomCommit();
     })
