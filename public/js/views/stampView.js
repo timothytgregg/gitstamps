@@ -84,17 +84,18 @@ StampView.prototype = {
     return {repoLangs:repoLangs, repoMax:repoMax};
   },
   makeRepoComposite:function(svg,data,repoMax){
-    var xScale = this.makeScale(data.length,500,'asc');
+    var xScale = this.makeScale(data.length,450,'asc');
     var yScale = this.makeScale(repoMax,300,'asc');
     var yAxisScale = this.makeScale(repoMax,300,'desc')
-    var w = 500/data.length;
+    var w = 450/data.length;
 
-    var yAxis = d3.svg.axis().orient('right').scale(yAxisScale);
+    var yAxis = d3.svg.axis().orient('left').scale(yAxisScale)
+      .tickFormat(d3.format('s'));
     svg.append('svg:g').attr('class','yaxis').call(yAxis)
-      .attr('transform','translate(50,0)')
+      .attr('transform','translate(40,50)')
 
     var repos = svg.selectAll('.repo').data(data).enter().append('g').attr('class','repo')
-      .attr('transform',function(d,i){return 'translate('+xScale(i)+',0)'});
+      .attr('transform',function(d,i){return 'translate('+(xScale(i)+50)+',0)'});
     repos.selectAll('rect').data(function(d){return d.value}).enter().append('rect')
       .attr('height',function(d){
         return yScale(d.value)
@@ -102,7 +103,7 @@ StampView.prototype = {
       .attr('width',w)
       .attr('transform',function(d,i){
         var vals = d3.select(this.parentNode).datum().value;
-        var offset = 0;
+        var offset = (-50);
         for (var b=0;b<i;b++){
           offset += yScale(vals[b].value);
         }
