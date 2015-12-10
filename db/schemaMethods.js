@@ -21,33 +21,23 @@ var setUp = function(token) {
 }
 
 // this method checks to see if a user exists for the requested username
-var checkGHUser = function (github, user, res) {
-  github.repos.getFromUser({
-    user:user,
-    per_page:1
-  }, function(err,result){
-    if (err){
-      res.json({exists: false});
-    }else{
-      res.json({exists:true});
-    }
+var checkGHUser = function (github, user) {
+  return new Promise(function(resolve, reject){
+    github.repos.getFromUser({
+      user:user,
+      per_page:1
+    }, function(err,result){
+      if (err){
+        console.log("User name not valid.")
+      }else{
+        resolve(result)
+      }
+    })
   })
 }
-
-// function doSomething() {
-//     return new Promise(function(resolve) {
-//         var value = 42;
-//         resolve(value);
-//     });
-// }
-//
-// doSomething().then(function(value) {
-//     console.log("got a value", value);
-// });
-
 // this method takes a user name and a GH object (generated from setUp)
-// and retrieves all of a user's repos.   it then calls the next functions
-// in the chain to screen the repos
+// and retrieves all of a user's repos. it returns a promise onto which we
+// chain the next function below
 var getRepoNamesChain = function (user, github) {
   return new Promise(function(resolve, reject){
     console.log("Getting repo names...")
@@ -76,9 +66,10 @@ var getRepoNamesChain = function (user, github) {
 
 
 // this method makes sure that the user being searched for is a contributor
-// on the repo in question before we search for it.  after this method finishes
-// it will call the next method down in order to start scraping info from the
-// repos
+// on the repo in question before we search for it.  essentially it takes a user
+// name and an array of repos and edits the array so as to remove any repo
+// to which the user has not contributed.  it returns a promise onto which the next
+// function is chained (below)
 var checkAuthors = function (user, github, names) {
   return new Promise(function(resolve, reject){
     console.log("Checking authorship of user per repo...")
@@ -116,9 +107,9 @@ var checkAuthors = function (user, github, names) {
   })
 }
 
-// this method takes a lsit of GH repos and finds all commit messages only by
-// the specified GH user and then adds them to the stamp object.  it then calls the next
-// function which deals with languages
+// this method takes an array of strings (GH repos) and finds all commit messages on those
+//repos, checking to make the author we're searching for actually authored those commitMessages
+// it returns a promise onto which the next function is called.
 var getCommitMessages = function (user, github, names){
   return new Promise(function(resolve, reject){
     console.log("Getting Commit Messages...")
@@ -162,11 +153,9 @@ var getCommitMessages = function (user, github, names){
     }
   })
 }
-// this function is called from inside the above function.  it is never called on its own.  it takes
-// all of its parameters from the above function and loops through the same list of repos for the
-// same user.  instead of getting commit messages, it looks for language data for each repo and constructs
-// an object which is saved in the languages column of our stamp model.  after this process is complete,
-// resp is rendered as json on the screen.
+// this function takes a user and a list of repos.  it fins the language breakdown per repo and returns that
+// information through a promise.  after this promise is fufilled (back in the profilescontroller) we save all this
+// data to the stamp and render it
 var getLangs = function(user, github, names){
   return new Promise(function(resolve, reject){
     console.log("Getting Languages...")
