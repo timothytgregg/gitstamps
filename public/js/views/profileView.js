@@ -12,8 +12,8 @@ ProfileView.prototype = {
     self.$el.html(self.profileTemplate(self.profile));
 
     var stampsDiv = self.$el.find(".stamps");
-    self.appendStamps(self.profile.stamps,stampsDiv);
-    
+    self.appendStamp(self.profile.stamps,stampsDiv);
+
     if(stampsDiv.children().length === 0){
       self.makeNewStamp(self.profile.id, stampsDiv)
     }
@@ -22,6 +22,11 @@ ProfileView.prototype = {
     newStamp.on("click",function(){
       self.makeNewStamp(self.profile.id,stampsDiv);
     });
+
+    var randomCommit = self.$el.find(".randomCommit");
+    randomCommit.on("click", function(){
+      self.getRandomCommit(self.profile.id)
+    })
 
     var unfollow = self.$el.find(".unfollow");
     unfollow.on("click", function(){
@@ -40,12 +45,19 @@ ProfileView.prototype = {
     html.append("<div class='stamps'></div>");
     return(html);
   },
-  appendStamps:function(stamps,stampsDiv){
-    stamps.forEach(function(stamp){
-      var stampView = new StampView(stamp);
+  appendStamp:function(stamps,stampsDiv){
+    if(stamps.length){
+      var stamp = stamps.reduce(function(previous, current, index, array){
+        if (Date.parse(current.createdAt) > Date.parse(previous.createdAt)){
+          return current
+        }else{
+          return previous
+        }
+      })
+      var stampView = new StampView(stamp)
       stampView.render(stampView.$el)
       stampsDiv.append(stampView.$el)
-    });
+    }
   },
   makeNewStamp:function(id,stampsDiv){
     Stamp.create(id,{})
@@ -54,5 +66,13 @@ ProfileView.prototype = {
         newStampView.render(newStampView.$el);
         stampsDiv.append(newStampView.$el);
       })
+  },
+  getRandomCommit:function(id){
+    console.log(this.$el.find('.stamps'));
+    //takes in profile ID
+    //finds all commit messages,
+    //grabs one random commit message,
+    //displays to page
+    //  appends div
   }
 };
