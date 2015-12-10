@@ -3,7 +3,7 @@ var StampView = function(stamp){
 }
 
 StampView.prototype = {
-  getLangSummary:function(){
+  getLangData:function(){
     var langTotals = this.stamp.data.langTotals;
     var langSum = 0;
     var langArray = [];
@@ -17,15 +17,14 @@ StampView.prototype = {
     langArray.sort(function(b,a){return a[1]-b[1]})
     return {langArray:langArray,langSum:langSum};
   },
-  render: function(stampsDiv){
-    var langSummary = this.getLangSummary();
-    var langArray = langSummary.langArray;
-    var langSum = langSummary.langSum;
-    //get sum of total languages
-    var xScale = d3.scale.linear().domain([0,langSum]).range([0,500])
-    var el = $("<svg/>")[0];
-    var svg = d3.select(stampsDiv[0]).append('svg').attr('height',60).attr('width',500);
-    var g = svg.append('g').attr('class','group')
+  makeScale:function(domainMax,rangeMax){
+    return d3.scale.linear().domain([0,domainMax]).range([0,rangeMax])
+  },
+  makeStampSvg:function(stampsDiv){
+    return d3.select(stampsDiv[0]).append('svg').attr('height',400).attr('width',500);
+  },
+  makeLangComposite:function(svg,langArray,langSum, g){
+    var xScale = this.makeScale(langSum,500);
     g.selectAll('rect').data(langArray).enter().append('rect')
       .attr('transform',function(d,i){
         var offset = 0;
@@ -45,6 +44,14 @@ StampView.prototype = {
       .on("mouseover",langHover)
       .on("mousemove",langHover)
       .on("mouseleave",langUnhover);
+  },
+  render: function(stampsDiv){
+    var svg = this.makeStampSvg(stampsDiv);
+    var langSummary = this.getLangData();
+    var langArray = langSummary.langArray;
+    var langSum = langSummary.langSum;
+    var langComposite = svg.append('g').attr('class','languageComposite');
+    this.makeLangComposite(svg,langArray,langSum,langComposite);
   }
 }
 
@@ -53,8 +60,8 @@ function langHover(d){
     .style('top',(d3.event.pageY+10)+"px")
     .style('left',(d3.event.pageX+10)+"px")
     .text(d[0]+": "+d[1]+ " bytes, "+d3.round(d[2],2)+"%")
-    .transition().duration(500).style('opacity',1)
+    .style('opacity',1)
 }
 function langUnhover(d){
-  d3.select('.tooltip').transition().duration(500).style('opacity',0)
+  d3.select('.tooltip').style('opacity',0)
 }

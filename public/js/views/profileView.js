@@ -3,7 +3,6 @@ var ProfileView = function(profile){
   this.profile = profile;
   this.$el = $("<div class='profile'>");
   this.render();
-
   $(".profiles").append(this.$el);
 };
 
@@ -40,7 +39,6 @@ ProfileView.prototype = {
   appendStamps:function(stamps,stampsDiv){
     stamps.forEach(function(stamp){
       var stampView = new StampView(stamp);
-      // stampsDiv.append(stampView.render());
       stampView.render(stampsDiv);
     });
   },
@@ -48,7 +46,6 @@ ProfileView.prototype = {
     Stamp.create(id,{})
       .then(function(newStamp){
         var newStampView = new StampView(newStamp);
-        // stampsDiv.append(newStampView.render());
         newStampView.render(stampsDiv)
       })
   }
