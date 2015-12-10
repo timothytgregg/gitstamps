@@ -186,7 +186,7 @@ StampView.prototype = {
       }
     };
     randomCommit = commits[Math.round(commits.length*Math.random(),0)];
-    $('.commitBox').val(randomCommit);
+    this.$el.find('.commitBox').val(randomCommit);
   },
   makeChartButtons:function(stampsDiv){
     var btnForm = $("<form/>");
