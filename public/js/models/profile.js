@@ -1,4 +1,5 @@
 var Profile = function(info){
+  console.log(info)
   this.createdAt = info.createdAt;
   this.username = info.username;
   this.id = info._id;
@@ -21,6 +22,7 @@ Profile.fetch = function(){
 };
 
 Profile.create = function(profileData) {
+  console.log(profileData)
   var self = this;
   var url = "http://localhost:3000/profiles.json";
   var request = $.ajax({
