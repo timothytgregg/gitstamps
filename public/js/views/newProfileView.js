@@ -1,4 +1,4 @@
-var newProfileView = function(profile){
+var newProfileView = function(){
   var self = this;
   self.$el = $(".newProfileView");
   $(".newProfile").on("submit", function(){

@@ -55,13 +55,5 @@ ProfileView.prototype = {
         newStampView.render(newStampView.$el);
         stampsDiv.append(newStampView.$el);
       })
-  },
-  getRandomCommit:function(id){
-    console.log(this.$el.find('.stamps'));
-    //takes in profile ID
-    //finds all commit messages,
-    //grabs one random commit message,
-    //displays to page
-    //  appends div
   }
 };

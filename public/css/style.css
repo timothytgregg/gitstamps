@@ -22,8 +22,9 @@ svg{
 }
 .stamp{
   border: 1px dashed grey;
-  margin: 1em 15%;
+  margin: 1em auto;
   border-radius: 5%;
+  width:600px;
 }
 
 .randomCommit{
