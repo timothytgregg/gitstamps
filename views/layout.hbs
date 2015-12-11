@@ -18,17 +18,14 @@
   <nav class="navbar navbar-default">
     <div class="container">
       <div class="collapse navbar-collapse" id="user-menu">
-        <ul>
-
-          {{#if currentUser}}
-            <li><a href="/logout">Logout</a></li>
-          {{else}}
-            <li><a href="/auth/github">Login With Github</a></li>
-          {{/if}}
-        </ul>
+        {{#if currentUser}}
+          <a href="/logout">Logout</a>
+        {{/if}}
       </div>
     </div>
   </nav>
+
+  <h1>GitStamps</h1>
 
   <main class="container">
     {{{body}}}

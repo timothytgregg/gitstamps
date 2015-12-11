@@ -1,9 +1,19 @@
 var StampView = function(stamp){
   this.stamp = stamp;
-  this.$el = $("<div class='stamp'><button class='randomCommit'>Get Random Commit</button></div>")
+  this.$el = $("<div class='stamp'><form><input class='commitBox' type='textbox' placeholder='Random Commit Message'></input><button class='randomCommit'>Get Random Commit!</button></form></div>")
 }
 
 StampView.prototype = {
+  getDate:function(){
+    var $el = $("<h4>")
+    var date = new Date(this.stamp.createdAt)
+    var month = date.getMonth() + 1
+    var display = month + "/" + date.getDate() + "/" + date.getFullYear()
+    $el.html(display)
+    console.log(this.stamp.createdAt)
+    console.log(date)
+    this.$el.append($el);
+  },
   getLangData:function(){
     var langSum = 0;
     var langArray = d3.entries(this.stamp.data.langTotals)
@@ -116,7 +126,7 @@ StampView.prototype = {
   },
   render: function(stampsDiv){
     var self = this;
-
+    this.getDate();
     var langSummary = this.getLangData();
     var langArray = langSummary.langArray;
     var langSum = langSummary.langSum;
@@ -133,8 +143,8 @@ StampView.prototype = {
     this.makeRepoComposite(repoSvg,repoLangs,repoMax);
     this.makeChartButtons(stampsDiv);
 
-    var randomCommitBtn = this.$el.find('.randomCommit');
-    randomCommitBtn.on("click", function(e){
+    var randomCommitButton = this.$el.find('.randomCommit');
+    randomCommitButton.on("click", function(e){
       e.preventDefault();
       self.getRandomCommit();
     });
@@ -175,6 +185,7 @@ StampView.prototype = {
       })
 
 
+
   },
   getRandomCommit:function(){
     repos = this.stamp.data.commitMessages;
@@ -186,7 +197,7 @@ StampView.prototype = {
       }
     };
     randomCommit = commits[Math.round(commits.length*Math.random(),0)];
-    alert(randomCommit);
+    this.$el.find('.commitBox').val(randomCommit);
   },
   makeChartButtons:function(stampsDiv){
     var btnForm = $("<form/>");

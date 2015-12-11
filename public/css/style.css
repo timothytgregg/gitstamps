@@ -3,11 +3,35 @@
   width:auto;
   padding:5px;
   border-radius: 5px;
-  border:1px solid gray;
+  border:1px solid red;
   background-color:white;
 }
+
+body{
+  text-align: center;
+  font: Helvetica;
+}
 svg{
-  display:block;
+  display: block;
+  margin: auto;
+}
+
+.profile{
+  margin: 1em;
+  border-radius: 5%;
+}
+.stamp{
+  border: 1px dashed grey;
+  margin: 1em 15%;
+  border-radius: 5%;
+}
+
+.randomCommit{
+  margin: 1em;
+}
+
+.commitBox{
+  width:50%
 }
 rect{
   stroke:white;
