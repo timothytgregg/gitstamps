@@ -13,13 +13,44 @@ body{
   text-align: center;
   font: Helvetica;
   height:auto;
+  min-width: 1100px;
+}
+.login-contents{
+  margin-top:200px;
+}
+.login-contents a,header a{
+  font-size:2em;
+  color:#AE5D5E;
+  font-weight:bold;
+}
+.login-contents img{
+  width:500px;
+}
+header{
+  height:100px;
+}
+header img{
+  height:100%;
+  float:left;
+  margin:1em;
+}
+header a{
+  float:right;
+  margin:1em;
+}
+header h2{
+  float:left;
+  margin:1em;
+  font-size: 3em;
+  color:#AE5D5E;
+  font-weight:bold;
 }
 svg{
   display: block;
   margin: auto;
 }
 main{
-  min-width: 900px;
+  min-width:1100px;
 }
 .profiles{
   float:left;

@@ -27,7 +27,16 @@
     </div>
   </nav> -->
 
-  <h1>GitStamps</h1>
+  <!-- <h1>GitStamps</h1> -->
+  {{#if currentUser}}
+  <header>
+    <img id='logo' src='css/gitstamps.png' alt='GitStamps' />
+    <h2>Welcome, {{currentUser.github.username}}!</h2>
+    {{#if currentUser}}
+      <a href="/logout">Logout</a>
+    {{/if}}
+  </header>
+  {{/if}}
 
   <main class="container">
     {{{body}}}
