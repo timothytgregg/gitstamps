@@ -54,7 +54,7 @@ var profilesController = {
     var git = Functions.setUp(token);
     Functions.checkGHUser(git,req.query.username).then(function(resp){
       if (resp.length > 0){
-        res.json({exists: true, username: resp[0].owner.login});
+        res.json({exists: true, username: resp[0].owner.login, imageURL: resp[0].owner.avatar_url});
       }else{
         res.json(resp)
       }
@@ -70,7 +70,8 @@ var profilesController = {
       }else{
         var profileObject = {
           createdAt: Date(),
-          username: req.body.username
+          username: req.body.username,
+          imageURL: req.body.imageURL
         }
         var newProfile = new Profile(profileObject).save(function(err){
           if(!err){
@@ -133,5 +134,4 @@ var profilesController = {
     });
   }
 }
-
 module.exports = profilesController;

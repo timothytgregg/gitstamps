@@ -15,8 +15,14 @@ svg{
   display: block;
   margin: auto;
 }
+.profileIMG{
+  width:128px;
+  margin: 10px;
+  border:2px solid black;
 
+}
 .profile{
+  border: 1px solid black;
   margin: 1em;
   border-radius: 5%;
 }
