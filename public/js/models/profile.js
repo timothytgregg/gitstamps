@@ -21,6 +21,21 @@ Profile.fetch = function(){
   return request;
 };
 
+Profile.fetchUnfollowed = function(){
+  var request = $.getJSON("http://localhost:3000/profiles/unfollowed.json")
+  .then(function(response){
+    var profiles = [];
+    for (var i=0;i<response.length;i++){
+      profiles.push(new UnfollowedProfile(response[i]));
+    }
+    return profiles;
+    })
+  .fail(function(response){
+    console.log("js failed to load");
+  });
+  return request;
+}
+
 Profile.create = function(profileData) {
   var self = this;
   var url = "http://localhost:3000/profiles.json";

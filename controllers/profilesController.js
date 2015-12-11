@@ -40,9 +40,17 @@ var profilesController = {
       }else{
         Profile.find({'_id': {$in: userProfiles}}).populate("stamps").then(function(profiles){
           res.render("index")
-        })
+        });
       }
     })
+  },
+  getUnfollowedProfiles:function(req,res){
+    User.findById(req.user._id, function(err, user){
+      var userProfiles = user.follows;
+      Profile.find({'_id': {$nin: userProfiles}}).select("-stamps").then(function(profiles){
+        res.json(profiles);//response renders json of profiles
+      });
+    });
   },
   getProfile: function(req,res){
     Profile.findById(req.params.id).populate("stamps").then(function(profile){

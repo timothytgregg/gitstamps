@@ -35,16 +35,21 @@ ProfileView.prototype = {
           self.$el.remove()
         })
       })
+      new UnfollowedProfileView(new UnfollowedProfile(self.profile));
     });
   },
   profileTemplate:function(profile){
     var html = $("<div/>")
-    html.append("<h3>" + profile.username + "</h3>");
+    var profileInfo = $("<div class='profileInfo cf'></div>")
+    profileInfo.append("<h3>" + profile.username + "</h3>");
     if (profile.imageURL){
-      html.append("<img class='profileIMG' src="+profile.imageURL+"></img>")
+      profileInfo.append("<img class='profileIMG' src="+profile.imageURL+"></img>")
     }
-    html.append("<button class='unfollow'>Unfollow</button>")
-    html.append("<button class='addStamp'>Add Stamp</button>");
+    var buttons = $("<div class='profile-buttons'></div>")
+    buttons.append("<button class='unfollow'>Unfollow</button>")
+    buttons.append("<button class='addStamp'>Add Stamp</button>");
+    profileInfo.append(buttons);
+    html.append(profileInfo);
     html.append("<div class='stamps'></div>");
     return(html);
   },
@@ -69,13 +74,5 @@ ProfileView.prototype = {
         newStampView.render(newStampView.$el);
         stampsDiv.append(newStampView.$el);
       })
-  },
-  getRandomCommit:function(id){
-    console.log(this.$el.find('.stamps'));
-    //takes in profile ID
-    //finds all commit messages,
-    //grabs one random commit message,
-    //displays to page
-    //  appends div
   }
 };
