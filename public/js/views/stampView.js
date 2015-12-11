@@ -4,6 +4,16 @@ var StampView = function(stamp){
 }
 
 StampView.prototype = {
+  getDate:function(){
+    var $el = $("<h4>")
+    var date = new Date(this.stamp.createdAt)
+    var month = date.getMonth() + 1
+    var display = month + "/" + date.getDate() + "/" + date.getFullYear()
+    $el.html(display)
+    console.log(this.stamp.createdAt)
+    console.log(date)
+    this.$el.append($el);
+  },
   getLangData:function(){
     var langSum = 0;
     var langArray = d3.entries(this.stamp.data.langTotals)
@@ -116,7 +126,7 @@ StampView.prototype = {
   },
   render: function(stampsDiv){
     var self = this;
-
+    this.getDate();
     var langSummary = this.getLangData();
     var langArray = langSummary.langArray;
     var langSum = langSummary.langSum;
