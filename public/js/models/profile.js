@@ -25,7 +25,7 @@ Profile.fetchUnfollowed = function(){
   .then(function(response){
     var profiles = [];
     for (var i=0;i<response.length;i++){
-      profiles.push(new UnfollowedProfileView(response[i]));
+      profiles.push(new UnfollowedProfile(response[i]));
     }
     return profiles;
     })

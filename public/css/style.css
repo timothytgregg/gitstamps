@@ -10,7 +10,7 @@
 body{
   text-align: center;
   font: Helvetica;
-  height:100%;
+  height:auto;
 }
 svg{
   display: block;

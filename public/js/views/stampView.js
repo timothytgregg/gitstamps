@@ -10,8 +10,6 @@ StampView.prototype = {
     var month = date.getMonth() + 1
     var display = month + "/" + date.getDate() + "/" + date.getFullYear()
     $el.html(display)
-    console.log(this.stamp.createdAt)
-    console.log(date)
     this.$el.append($el);
   },
   getLangData:function(){
