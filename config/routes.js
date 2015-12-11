@@ -22,6 +22,9 @@ router.route('/')
 router.route('/profiles/check')
   .get(profilesController.checkProfile)
 
+router.route('/profiles/unfollowed.json')
+  .get(profilesController.getUnfollowedProfiles)
+
 router.route('/profiles/:id')
   .get(profilesController.getProfile)
   .patch(profilesController.updateProfile)

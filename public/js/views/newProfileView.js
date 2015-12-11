@@ -1,11 +1,11 @@
-var newProfileView = function(profile){
+var newProfileView = function(){
   var self = this;
   self.$el = $(".newProfileView");
   $(".newProfile").on("submit", function(){
     event.preventDefault();
     self.checkProfile().then(function(result){
       if (result.exists){
-        self.createProfile(result.username);
+        self.createProfile(result.username, result.imageURL);
       }else{
         alert("That user doesn't exist")
         self.$el.find("input").val('');
@@ -15,9 +15,9 @@ var newProfileView = function(profile){
 };
 
 newProfileView.prototype = {
-  createProfile: function(username) {
+  createProfile: function(username, imageURL) {
     var self = this;
-    var data = {username:username};
+    var data = {username:username, imageURL:imageURL};
     Profile.create(data).then(function(newProfile){
       self.$el.find("input").val('');  // clear the input
       var view = new ProfileView(newProfile); // create the new profile view (renders)

@@ -24,6 +24,7 @@
     "express-session": "^1.12.1",
     "github": "^0.2.4",
     "hbs": "^4.0.0",
+    "jasmine-node": "^1.14.5",
     "method-override": "^2.3.5",
     "mongoose": "^4.2.9",
     "passport": "^0.3.2",
