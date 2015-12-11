@@ -43,7 +43,6 @@ var getRepoNamesChain = function (user, github) {
   return new Promise(function(resolve, reject){
     console.log("Getting repo names...")
     var names = []; // array to store names of repos as strings
-
     github.repos.getFromUser({
       user: user, // user we want to search for
       sort: "updated", // order by most recently updated
@@ -54,12 +53,9 @@ var getRepoNamesChain = function (user, github) {
         return err;
       }
       for (var h=0; h < res.length; h++){
-        //if (res[h].fork == false) {
-          names.push(res[h].name); // construct the array of repo names
-        //}
+        names.push(res[h].name); // construct the array of repo names
       }
       console.log("Found "+names.length+" repos")
-      // checkAuthors(user, github, stamp, profile, names, resp);
       resolve(names);
     })
   })

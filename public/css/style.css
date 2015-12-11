@@ -73,6 +73,11 @@ main{
   float:left;
   margin-right:1em;
 }
+.profileIMG{
+  width:128px;
+  margin: 10px;
+  border:2px solid black;
+}
 .profile{
   margin: 1em auto;
   border-radius: 5%;

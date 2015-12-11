@@ -41,6 +41,9 @@ ProfileView.prototype = {
   profileTemplate:function(profile){
     var html = $("<div/>")
     html.append("<h3>" + profile.username + "</h3>");
+    if (profile.imageURL){
+      html.append("<img class='profileIMG' src="+profile.imageURL+"></img>")
+    }
     html.append("<button class='unfollow'>Unfollow</button>")
     html.append("<button class='addStamp'>Add Stamp</button>");
     html.append("<div class='stamps'></div>");
