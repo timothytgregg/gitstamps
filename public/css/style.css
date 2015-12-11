@@ -1,6 +1,11 @@
 *{
   box-sizing: border-box;
 }
+.cf:after{
+  display:table;
+  content:'';
+  clear:both;
+}
 .tooltip{
   height:auto;
   width:auto;
@@ -54,11 +59,14 @@ main{
 }
 .profiles{
   float:left;
-  width:600px;
+  width:800px;
 }
 .newProfileView{
   float:right;
   width:250px;
+  padding:10px;
+  border-radius: 10px;
+  border:2px dashed gray;
 }
 .newProfile{
   float:left;
@@ -76,7 +84,9 @@ main{
 .profileIMG{
   width:128px;
   margin: 10px;
-  border:2px solid black;
+  border:2px solid gray;
+  border-radius:5px;
+  float:left;
 }
 .profile{
   margin: 1em auto;
