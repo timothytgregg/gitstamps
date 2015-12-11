@@ -35,6 +35,7 @@ ProfileView.prototype = {
           self.$el.remove()
         })
       })
+      new UnfollowedProfileView(new UnfollowedProfile(self.profile));
     });
   },
   profileTemplate:function(profile){

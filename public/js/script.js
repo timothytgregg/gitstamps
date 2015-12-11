@@ -7,7 +7,6 @@ $(document).ready(function(){
   });
   Profile.fetchUnfollowed().then(function(unfollows){
     unfollows.forEach(function(unfollow){
-      console.log(unfollow);
       new UnfollowedProfileView(unfollow);
     })
   })
