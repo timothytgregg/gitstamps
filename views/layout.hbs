@@ -11,25 +11,32 @@
   <script src="js/models/stamp.js"></script>
   <script src="js/views/stampView.js"></script>
   <script src="js/models/profile.js"></script>
+  <script src="js/models/unfollowed.js"></script>
   <script src="js/views/profileView.js"></script>
   <script src="js/views/newProfileView.js"></script>
+  <script src="js/views/unfollowedProfileView.js"></script>
 </head>
 <body>
-  <nav class="navbar navbar-default">
-    <div class="container">
-      <div class="collapse navbar-collapse" id="user-menu">
-        {{#if currentUser}}
-          <a href="/logout">Logout</a>
-        {{/if}}
-      </div>
-    </div>
-  </nav>
+  {{#if currentUser}}
+  <header>
+    <img id='logo' src='css/gitstamps.png' alt='GitStamps' />
+    <h2>Welcome, {{currentUser.github.username}}!</h2>
+    {{#if currentUser}}
+      <a href="/logout">Logout</a>
+    {{/if}}
+  </header>
+  {{/if}}
 
-  <h1>GitStamps</h1>
-
-  <main class="container">
+  <main class="container cf">
     {{{body}}}
   </main>
+
+  <footer>
+    GitStamps created by <a href="http://www.github.com/ajohnson052">Alexis Johnson</a>,
+      <a href="http://www.github.com/solowt">Thomas Solow</a>,
+      <a href="http://www.github.com/timothytgregg">Tim Gregg</a>,
+      and <a href="http://www.github.com/cpgruber">Chase Gruber</a>
+  </footer>
 
 </body>
 </html>

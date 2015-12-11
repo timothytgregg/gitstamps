@@ -1,6 +1,7 @@
 var Profile = function(info){
   this.createdAt = info.createdAt;
   this.username = info.username;
+  this.imageURL = info.imageURL
   this.id = info._id;
   this.stamps = info.stamps;
 };
@@ -19,6 +20,21 @@ Profile.fetch = function(){
     });
   return request;
 };
+
+Profile.fetchUnfollowed = function(){
+  var request = $.getJSON("http://gitstamps.herokuapp.com/profiles/unfollowed.json")
+  .then(function(response){
+    var profiles = [];
+    for (var i=0;i<response.length;i++){
+      profiles.push(new UnfollowedProfile(response[i]));
+    }
+    return profiles;
+    })
+  .fail(function(response){
+    console.log("js failed to load");
+  });
+  return request;
+}
 
 Profile.create = function(profileData) {
   var self = this;
