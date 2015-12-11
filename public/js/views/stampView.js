@@ -1,6 +1,6 @@
 var StampView = function(stamp){
   this.stamp = stamp;
-  this.$el = $("<div class='stamp'><form><input class='commitBox' type='textbox' placeholder='Random Commit Message'></input><button class='randomCommit'>Get Random Commit!</button></form></div>")
+  this.$el = $("<div class='stamp'><form><input class='commitBox' type='textbox' placeholder='Random Commit Message'></input><button class='randomCommit'>Get Random Commit!</button></form><p>Average Commit Message Length: "+d3.round(this.stamp.data.averageMessageLength, 2)+"</p></div>")
 }
 
 StampView.prototype = {

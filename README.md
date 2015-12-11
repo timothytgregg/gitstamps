@@ -13,12 +13,13 @@ Chase, Tim, Thomas, Alexis
 6. view on `localhost:3000`
 
 # Overview
-The basic idea of Gitstamps is simple: you enter any github user's login name on the front-end and press enter.  That name is then sent as a post request to the back-end, where a profile is created and added to our database.  The back-end then responds to the front end with json, which is rendered for the user.
+The basic idea of Gitstamps is simple: you enter any github user's login name and get back a summary of their recent activity on github.  Github compiles a lot of data per repository, but it doesn't compile a whole lot per user.  Gitstamps fills that gap.
 
-Once a profile is created, the user can make a new stamp by clicking a button next to each profile.  This button also sends a post request to the back end containing the profile's name.  On the back end, we use this name to make a series of api calls to github (explicated below).  Once the calls return, we store all that information in our  
+# Development Process
+From this fairly simple idea, things got complex quickly.  The calls to github were difficult to handle because they needed to be written as a loop of asynchronous calls.  We also had to add additional calls during the profile creation process in order to ensure that the profile name is a valid github name and to pull an image url from github for our profile.
 
 # Getting Data From Github
-When the back end of our app receives a post request asking for a new stamp, we make a series of calls to github's api in order to populate the new stamp with data.  These calls are made from inside the profilesController.  All of the functions that actually interact with github's api are imported from schemaMethods.
+When the back-end of our app receives a post request asking for a new stamp, we make a series of calls to github's api in order to populate the new stamp with data.  These calls are made from inside the profilesController.  All of the functions that actually interact with github's api are imported from schemaMethods.
 
 ### To summarize how these calls work:
 1. First, we send a single request to github's api asking for all of the repos located on a specific user's account.  The getRepoNamesChain function in schemaMethods makes this call.  getRepoNamesChain returns a promise which resolves as an array of repo names.
