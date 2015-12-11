@@ -2,6 +2,7 @@ var GitHubStrategy = require('passport-github').Strategy;
 var User            = require('../models/user');
 var env = require('../env.js');
 var Profile = require("../models/profile");
+var Functions = require("../db/schemaMethods")
 
 
 
@@ -38,14 +39,17 @@ module.exports = function(passport){
               })
               // followProfile(req.user._id,profile,res)
             }else{
-              var newProfile = new Profile({'username': newUser.github.username}).save(function(err, newProfile){
-                if(!err){
-                  console.log(newUser.github.username + " saved in the database")
-                }
-                newUser.follows.push(newProfile._id)
-                newUser.save(function(err){
-                  if(err) throw err;
-                  return done(null, newUser);
+              var git = Functions.setUp(token);
+              Functions.checkGHUser(git, newUser.github.username).then(function(response){
+                var newProfile = new Profile({'username': newUser.github.username, imageURL:response[0].owner.avatar_url}).save(function(err, newProfile){
+                  if(!err){
+                    console.log(newUser.github.username + " saved in the database")
+                  }
+                  newUser.follows.push(newProfile._id)
+                  newUser.save(function(err){
+                    if(err) throw err;
+                    return done(null, newUser);
+                  })
                 })
               })
             }
