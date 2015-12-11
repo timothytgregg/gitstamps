@@ -59,17 +59,17 @@ main{
 }
 .profiles{
   float:left;
-  width:800px;
+  width:750px;
 }
 .newProfileView{
   float:right;
-  width:250px;
+  width:350px;
   padding:10px;
   border-radius: 10px;
   border:2px dashed gray;
 }
 .newProfile{
-  float:left;
+  text-align: center;
   margin-bottom:1em;
 }
 .unfollowed{
@@ -80,6 +80,14 @@ main{
 .unfollowed button{
   float:left;
   margin-right:1em;
+}
+.profileInfo h3{
+  display:inline-block;
+  margin-top:0.5em;
+  font-size:4em;
+}
+.profile-buttons{
+  margin-bottom:0.5em;
 }
 .profileIMG{
   width:128px;
@@ -94,7 +102,7 @@ main{
   width:600px;
 }
 .stamp{
-  border: 1px dashed grey;
+  border: 2px dashed grey;
   border-radius: 5%;
   width:100%;
 }

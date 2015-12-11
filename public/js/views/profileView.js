@@ -45,8 +45,10 @@ ProfileView.prototype = {
     if (profile.imageURL){
       profileInfo.append("<img class='profileIMG' src="+profile.imageURL+"></img>")
     }
-    profileInfo.append("<button class='unfollow'>Unfollow</button>")
-    profileInfo.append("<button class='addStamp'>Add Stamp</button>");
+    var buttons = $("<div class='profile-buttons'></div>")
+    buttons.append("<button class='unfollow'>Unfollow</button>")
+    buttons.append("<button class='addStamp'>Add Stamp</button>");
+    profileInfo.append(buttons);
     html.append(profileInfo);
     html.append("<div class='stamps'></div>");
     return(html);
