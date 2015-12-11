@@ -22,7 +22,7 @@ Profile.fetch = function(){
 };
 
 Profile.fetchUnfollowed = function(){
-  var request = $.getJSON("http://gitstamps.herokuapp.com/profiles/unfollowed.json")
+  var request = $.getJSON("https://gitstamps.herokuapp.com/profiles/unfollowed.json")
   .then(function(response){
     var profiles = [];
     for (var i=0;i<response.length;i++){
