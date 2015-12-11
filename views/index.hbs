@@ -1,11 +1,14 @@
+{{#if currentUser}}
+  <a href="/logout">Logout</a>
+{{/if}}
 <h2>Welcome, {{currentUser.github.username}}!</h2>
 <div class="newProfileView">
-<form class="newProfile">
-  <input name='username' placeholder="GitHub Username">
-  <button class='createProfile'>Add Profile</button>
-</form>
+  <form class="newProfile">
+    <input name='username' placeholder="GitHub Username">
+    <button class='createProfile'>Add Profile</button>
+  </form>
+  <div class="unfollows"></div>
 </div>
 <div class="profiles"></div>
-<div class="unfollows"></div>
 <div class="tooltip"></div>
 <script src="js/script.js" type="text/javascript"></script>

@@ -1,3 +1,6 @@
+*{
+  box-sizing: border-box;
+}
 .tooltip{
   height:auto;
   width:auto;
@@ -6,7 +9,6 @@
   border:1px solid red;
   background-color:white;
 }
-
 body{
   text-align: center;
   font: Helvetica;
@@ -16,22 +18,43 @@ svg{
   display: block;
   margin: auto;
 }
-
-.profile{
-  margin: 1em;
-  border-radius: 5%;
+main{
+  min-width: 900px;
 }
-.stamp{
-  border: 1px dashed grey;
+.profiles{
+  float:left;
+  width:600px;
+}
+.newProfileView{
+  float:left;
+  width:250px;
+}
+.newProfile{
+  float:left;
+  margin-bottom:1em;
+}
+.unfollowed{
+  display:inline-block;
+  float:left;
+  clear:both;
+}
+.unfollowed button{
+  float:left;
+  margin-right:1em;
+}
+.profile{
   margin: 1em auto;
   border-radius: 5%;
   width:600px;
 }
-
+.stamp{
+  border: 1px dashed grey;
+  border-radius: 5%;
+  width:100%;
+}
 .randomCommit{
   margin: 1em;
 }
-
 .commitBox{
   width:50%
 }
