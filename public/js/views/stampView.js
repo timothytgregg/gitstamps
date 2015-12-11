@@ -1,9 +1,17 @@
 var StampView = function(stamp){
   this.stamp = stamp;
-  this.$el = $("<div class='stamp'><form><input class='commitBox' type='textbox' placeholder='Random Commit Message'></input><button class='randomCommit'>Get Random Commit!</button></form></div>")
+  this.$el = $("<div class='stamp'><form><input class='commitBox' type='textbox' placeholder='Random Commit Message'></input><button class='randomCommit'>Get Random Commit!</button></form><p>Average Commit Message Length: "+d3.round(this.stamp.data.averageMessageLength, 2)+"</p></div>")
 }
 
 StampView.prototype = {
+  getDate:function(){
+    var $el = $("<h4>")
+    var date = new Date(this.stamp.createdAt)
+    var month = date.getMonth() + 1
+    var display = month + "/" + date.getDate() + "/" + date.getFullYear()
+    $el.html(display)
+    this.$el.append($el);
+  },
   getLangData:function(){
     var langSum = 0;
     var langArray = d3.entries(this.stamp.data.langTotals)
@@ -116,7 +124,7 @@ StampView.prototype = {
   },
   render: function(stampsDiv){
     var self = this;
-
+    this.getDate();
     var langSummary = this.getLangData();
     var langArray = langSummary.langArray;
     var langSum = langSummary.langSum;
@@ -155,13 +163,6 @@ StampView.prototype = {
     svg.select('.yaxis').transition().duration(500).call(yAxis);
     var repos = svg.selectAll('.repo');
     repos.selectAll('rect').transition().duration(500)
-      .style('height',function(d){
-        var vals = d3.select(this.parentNode).datum().value;
-        var sum = d3.sum(vals, function(d) { return d.value; });
-        var val = (field=='percent')?d.value/sum:d.value;
-        var h = (field=='percent')?yScale(d.value/sum):yScale(d.value);
-        return h;
-      })
       .attr('transform',function(d,i){
         var vals = d3.select(this.parentNode).datum().value;
         var sum = d3.sum(vals, function(d) { return d.value; });
@@ -173,6 +174,14 @@ StampView.prototype = {
         var h = (field=='percent')?yScale(d.value/sum):yScale(d.value);
         return 'translate(0,'+(300-offset-h)+')'
       })
+      .attr('height',function(d){
+        var vals = d3.select(this.parentNode).datum().value;
+        var sum = d3.sum(vals, function(d) { return d.value; });
+        var val = (field=='percent')?d.value/sum:d.value;
+        var h = (field=='percent')?yScale(d.value/sum):yScale(d.value);
+        return h;
+      })
+
 
 
   },

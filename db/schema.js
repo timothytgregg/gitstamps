@@ -31,6 +31,7 @@ var StampSchema = new Schema({
 var ProfileSchema = new Schema({
   createdAt: Date,
   username: String,
+  imageURL: String,
   stamps: [StampSchema]
 })
 
