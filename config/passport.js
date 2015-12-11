@@ -31,6 +31,11 @@ module.exports = function(passport){
 
             if (profile){
               console.log(newUser.github.username + " already in the database")
+              newUser.follows.push(profile)
+              newUser.save(function(err){
+                if(err) throw err;
+                return done(null, newUser);
+              })
               // followProfile(req.user._id,profile,res)
             }else{
               var newProfile = new Profile({'username': newUser.github.username}).save(function(err, newProfile){
