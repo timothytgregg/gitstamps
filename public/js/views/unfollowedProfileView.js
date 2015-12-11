@@ -7,7 +7,7 @@ var UnfollowedProfileView = function(profile){
 UnfollowedProfileView.prototype = {
   render:function(){
     self = this;
-    console.log(this)
+
     this.$el.append("<span>"+this.username+"</span>")
     this.$el.append("<button>Follow</button>")
     $('.unfollows').append(this.$el);
