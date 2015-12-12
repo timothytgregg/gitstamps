@@ -113,28 +113,23 @@ var profilesController = {
       var git = Functions.setUp(token); // log in to github's api using the oauth token
         Functions.getRepoNamesChain(profile.username, git).then(function(repoNames) { // get all repo names then...
           Functions.checkAuthors(profile.username, git, repoNames).then(function(refinedNames) { // make sure our user is a contributor on each repo then...
+            // make sure the user has at least one repo he has contributed to
             if (refinedNames.length > 0) {
-              Functions.getCommitMessages(profile.username, git, refinedNames).then(function(responseObject) { // find all commit messages on the remaining repos then...
-                stamp.data.commitMessages = responseObject.nameMsgMap; // store the messages on our stamp
-                Functions.getLangs(profile.username, git, responseObject.names).then(function(nameLangMap) { // get all language data then...
-                  stamp.data.languages = nameLangMap; // add raw languuage data to stamp
-                  stamp.data.langTotals = Functions.parseLangs(nameLangMap); // compile the raw language data into total language per user stat
-                  stamp.data.langAverages = Functions.langAverages(stamp.data.langTotals) // percentage of each language per user
-                  stamp.data.averageMessageLength = Functions.msgAverages(stamp.data.commitMessages) // calculate average commit message length
-                  stamp.createdAt = Date(); // add time stamp
-                  profile.stamps.push(stamp); // push the stamp onto the owner profile's array of stamps
-                  profile.save(function(err, docs) { // save the profile
-                  if (err) {
-                    console.log("Failed to save stamp: " + err)
-                  } else {
-                    console.log("Saved stamp to DB under " + profile.username + "'s profile.")
-                    res.json(stamp) // repsond with json
-                    return;
-                  }
-                })
+              // this function will get commit msgs and language data and save all of this data to the stamp.  after this we can save the stamp
+              Functions.getDataSimul(profile.username, git, refinedNames, stamp).then(function(completedStamp){
+                completedStamp.createdAt = Date(); // add time stamp
+                profile.stamps.push(completedStamp); // push the stamp onto the owner profile's array of stamps
+                profile.save(function(err, docs) { // save the profile
+                if (err) {
+                  console.log("Failed to save stamp: " + err)
+                } else {
+                  console.log("Saved stamp to DB under " + profile.username + "'s profile.")
+                  res.json(stamp) // respond with json
+                  return;
+                }
               })
             })
-          } else {
+          } else { // if the user has contributed to zero repos we have nothing to search
             console.log("User has contributed to no repos. Nothing to search.")
           }
         })
