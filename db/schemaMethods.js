@@ -108,6 +108,35 @@ var checkAuthors = function (user, github, names) {
   })
 }
 
+// this function wraps getCommitMessages and getLangs in a promise so they can be run parallel
+// to each other rather than one after the other.  note: only one of the resolves will be called
+// based on the order that the api calls to github return
+var getDataSimul = function(user, github, names, stamp){
+  return new Promise(function(resolve, reject){
+    var gotMsgs = false;
+    var gotLangs = false;
+    getCommitMessages(user, github, names).then(function(nameMsgMap){
+      stamp.data.commitMessages = nameMsgMap;
+      stamp.data.averageMessageLength = msgAverages(stamp.data.commitMessages) // calculate average commit message length
+      gotMsgs = true;
+    }).then(function(){
+      if (gotLangs == true){  // if languages are already saved when msgs return (likely)
+        resolve(stamp)
+      }
+    })
+    getLangs(user, github, names).then(function(nameLangMap){
+      stamp.data.languages = nameLangMap; // add raw languuage data to stamp
+      stamp.data.langTotals = parseLangs(nameLangMap); // compile the raw language data into total language per user stat
+      stamp.data.langAverages = langAverages(stamp.data.langTotals) // percentage of each language per user
+      gotLangs = true;
+    }).then(function(){
+      if (gotMsgs == true){ // if msgs are already saved languages return (unlikely, msgs take longer usually)
+        resolve(stamp) // return the completed stamp, after this it will be added to a profile and saved (in profilesController)
+      }
+    })
+  })
+}
+
 // this method takes an array of strings (GH repos) and finds all commit messages on those
 //repos, checking to make the author we're searching for actually authored those commitMessages
 // it returns a promise onto which the next function is called.
@@ -141,13 +170,7 @@ var getCommitMessages = function (user, github, names){
         }
         if (++callsDone == names.length){ // check to see if we've done the total number of calls.  if we have, the number of calls will equal the number of repos
           console.log("Got Commit Messages!"); // success message
-          // stamp.data.commitMessages = nameMsgMap // set the commitMessages column on the stamp to be the object we constructed above
-          // getLangs(user, github, stamp, profile, names, resp) // now we call the getLangs method, to get all langugages on each repo
-          var responseObject = {
-                            names: names,
-                            nameMsgMap: nameMsgMap
-                            }
-          resolve(responseObject);
+          resolve(nameMsgMap);
         }
       }.bind({i:i})) // bind i so we can use it to figure out which repo we're currently searching.  this is needed in order to match repos to commit messages
 
@@ -236,12 +259,7 @@ var msgAverages = function (messages){
 module.exports = {
   setUp: setUp,
   getRepoNamesChain: getRepoNamesChain,
-  getCommitMessages: getCommitMessages,
   checkGHUser: checkGHUser,
   checkAuthors: checkAuthors,
-  getCommitMessages: getCommitMessages,
-  getLangs: getLangs,
-  langAverages: langAverages,
-  parseLangs: parseLangs,
-  msgAverages: msgAverages
+  getDataSimul: getDataSimul
 }
