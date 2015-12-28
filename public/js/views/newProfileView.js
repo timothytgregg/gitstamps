@@ -14,6 +14,7 @@ var newProfileView = function(){
   })
 };
 
+// mms: interesting location for this.  I like it.
 newProfileView.prototype = {
   createProfile: function(username, imageURL) {
     var self = this;

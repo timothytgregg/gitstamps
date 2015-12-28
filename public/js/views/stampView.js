@@ -3,6 +3,7 @@ var StampView = function(stamp){
   this.$el = $("<div class='stamp'><form><input class='commitBox' type='textbox' placeholder='Random Commit Message'></input><button class='randomCommit'>Get Random Commit!</button></form><p>Average Commit Message Length: "+d3.round(this.stamp.data.averageMessageLength, 2)+"</p></div>")
 }
 
+// mms:  Nice organization. Some of these are starting to get a bit long.
 StampView.prototype = {
   getDate:function(){
     var $el = $("<h4>")
