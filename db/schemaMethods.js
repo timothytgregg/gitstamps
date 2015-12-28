@@ -22,6 +22,7 @@ var setUp = function(token) {
 
 // this method checks to see if a user exists for the requested username
 var checkGHUser = function (github, user) {
+  // mms: promises?  Impressed.
   return new Promise(function(resolve, reject){
     github.repos.getFromUser({
       user:user,
